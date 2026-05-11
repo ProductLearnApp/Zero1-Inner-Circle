@@ -80,6 +80,7 @@ export default function DashboardPage() {
         const evRes = await fetch('/api/admin/event')
         if (!evRes.ok) { setLoading(false); return }
         const { event } = await evRes.json()
+        if (!event) { setLoading(false); return }
         setEvent(event)
         const stRes = await fetch(`/api/admin/checkin/stats?eventId=${event.id}`)
         if (stRes.ok) setStats(await stRes.json())
@@ -111,9 +112,25 @@ export default function DashboardPage() {
       <div className="p-8 max-w-5xl">
         {loading ? (
           <Spinner />
+        ) : !event ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style={{ background: 'rgba(242,186,48,0.1)', border: '1px solid rgba(242,186,48,0.2)' }}>
+              <span className="text-2xl">⚡</span>
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">No event yet</h2>
+            <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(102,102,102,0.8)' }}>
+              Create your event in Settings to start managing attendees and check-ins.
+            </p>
+            <a href="/admin/settings"
+              className="px-6 py-3 rounded-lg text-sm font-semibold text-black"
+              style={{ background: 'var(--accent)' }}>
+              Create Event →
+            </a>
+          </div>
         ) : !stats ? (
           <p className="text-sm" style={{ color: 'rgba(102,102,102,0.7)' }}>
-            No event data found. Add attendees first.
+            No attendees yet. Import a CSV from the Attendees page.
           </p>
         ) : (
           <>

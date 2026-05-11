@@ -4,8 +4,6 @@ import { prisma } from '@/lib/prisma'
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get('id')
-    // Find by id, or fall back to most recent event regardless of isActive flag.
-    // The isActive filter was too strict — a single admin toggling it off locked everyone out.
     const event = id
       ? await prisma.event.findUnique({ where: { id }, include: { settings: true } })
       : await prisma.event.findFirst({
@@ -13,8 +11,62 @@ export async function GET(req: NextRequest) {
           include: { settings: true },
         })
 
-    if (!event) return Response.json({ error: 'No event found' }, { status: 404 })
-    return Response.json({ event })
+    // Return null (not 404) when no event exists — first-run is a normal state
+    return Response.json({ event: event ?? null })
+  } catch (e) {
+    console.error(e)
+    return Response.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const existing = await prisma.event.findFirst()
+    if (existing) {
+      return Response.json({ error: 'Event already exists' }, { status: 409 })
+    }
+
+    const body = await req.json() as {
+      name: string
+      date: string
+      time: string
+      city: string
+      venue: string
+      heroImageUrl?: string
+      maxCapacity?: number
+      settings?: {
+        accentColor?: string
+        allowPlusOne?: boolean
+        logoUrl?: string
+        passBackgroundUrl?: string
+        whatsappTemplateSelected?: string
+        whatsappTemplateReminder?: string
+        whatsappTemplatePlusOne?: string
+      }
+    }
+
+    const { settings, ...eventFields } = body
+
+    const event = await prisma.event.create({
+      data: {
+        ...eventFields,
+        maxCapacity: eventFields.maxCapacity ?? 30,
+        settings: {
+          create: {
+            accentColor: settings?.accentColor ?? '#F2BA30',
+            allowPlusOne: settings?.allowPlusOne ?? true,
+            logoUrl: settings?.logoUrl,
+            passBackgroundUrl: settings?.passBackgroundUrl,
+            whatsappTemplateSelected: settings?.whatsappTemplateSelected,
+            whatsappTemplateReminder: settings?.whatsappTemplateReminder,
+            whatsappTemplatePlusOne: settings?.whatsappTemplatePlusOne,
+          },
+        },
+      },
+      include: { settings: true },
+    })
+
+    return Response.json({ event }, { status: 201 })
   } catch (e) {
     console.error(e)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

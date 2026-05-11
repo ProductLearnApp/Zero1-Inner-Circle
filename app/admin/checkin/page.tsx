@@ -50,9 +50,11 @@ export default function CheckinPage() {
   const [isLive, setIsLive]           = useState(true)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const [noEvent, setNoEvent] = useState(false)
+
   useEffect(() => {
     fetch('/api/admin/event').then(r => r.ok ? r.json() : null).then(d => {
-      if (!d) return
+      if (!d?.event) { setNoEvent(true); return }
       setEventId(d.event.id)
       loadStats(d.event.id)
     })
@@ -80,6 +82,26 @@ export default function CheckinPage() {
     }, 3000)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId])
+
+  if (noEvent) return (
+    <div className="h-screen flex items-center justify-center" style={{ background: '#0a0a0f' }}>
+      <div className="flex flex-col items-center text-center px-6">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+          style={{ background: 'rgba(242,186,48,0.1)', border: '1px solid rgba(242,186,48,0.2)' }}>
+          <span className="text-2xl">⚡</span>
+        </div>
+        <h2 className="text-xl font-bold text-white mb-2">No event yet</h2>
+        <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(102,102,102,0.8)' }}>
+          Create your event in Settings before using the check-in scanner.
+        </p>
+        <a href="/admin/settings"
+          className="px-6 py-3 rounded-lg text-sm font-semibold text-black"
+          style={{ background: 'var(--accent)' }}>
+          Create Event →
+        </a>
+      </div>
+    </div>
+  )
 
   return (
     <div className="h-screen flex flex-col" style={{ background: '#0a0a0f' }}>

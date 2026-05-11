@@ -71,14 +71,16 @@ export default function AttendeesPage() {
   async function loadEvent() {
     const res = await fetch('/api/admin/event')
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
-      if (res.status === 404) { setNoEvent(true) }
-      else { setDbError('Database not connected or misconfigured. Set a valid DATABASE_URL in .env.local, run npm run db:push, and restart the server.') }
-      console.error('loadEvent error:', body.error ?? `Server error ${res.status}`)
+      setDbError('Could not reach the database. Check that DATABASE_URL is set correctly in your Railway environment variables.')
       setLoading(false)
       return
     }
     const { event } = await res.json()
+    if (!event) {
+      setNoEvent(true)
+      setLoading(false)
+      return
+    }
     setNoEvent(false); setDbError(null); setEvent(event)
     await loadAttendees(event.id)
   }
@@ -120,7 +122,7 @@ export default function AttendeesPage() {
 
   async function handleImport() {
     if (!preview) return
-    if (!event) { setImportError('No event found. Run npm run db:seed first.'); return }
+    if (!event) { setImportError('No event yet. Create one in Settings first.'); return }
     setImporting(true); setImportError(null)
     try {
       const res = await fetch('/api/admin/attendees/upload', {
@@ -213,22 +215,24 @@ export default function AttendeesPage() {
         {/* Error banners */}
         {dbError && (
           <div className="mb-5 rounded-xl p-4" style={{ background: '#1a0a00', border: '1px solid #5a2a00' }}>
-            <p className="text-sm font-semibold text-orange-400 mb-1">Database not connected</p>
-            <p className="text-xs mb-2" style={{ color: '#aaa' }}>{dbError}</p>
-            <div className="rounded-lg p-3 font-mono text-xs" style={{ background: '#111', color: '#6fcf30' }}>
-              <p>1. Add real DATABASE_URL to .env.local</p>
-              <p>2. npm run db:push</p>
-              <p>3. npm run db:seed</p>
-              <p>4. Restart dev server</p>
-            </div>
+            <p className="text-sm font-semibold text-orange-400 mb-1">Database error</p>
+            <p className="text-xs" style={{ color: '#aaa' }}>{dbError}</p>
           </div>
         )}
         {noEvent && !dbError && (
-          <div className="mb-5 rounded-xl p-4" style={{ background: '#1a1000', border: '1px solid #4a3000' }}>
-            <p className="text-sm font-semibold text-yellow-400 mb-1">No event found</p>
-            <p className="text-xs" style={{ color: '#aaa' }}>
-              Run <code className="font-mono">npm run db:seed</code> in the zero1/ folder, then refresh.
-            </p>
+          <div className="mb-5 rounded-xl p-4 flex items-center justify-between gap-4"
+            style={{ background: 'rgba(242,186,48,0.08)', border: '1px solid rgba(242,186,48,0.25)' }}>
+            <div>
+              <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--accent)' }}>No event created yet</p>
+              <p className="text-xs" style={{ color: '#aaa' }}>
+                Create your event first before importing attendees.
+              </p>
+            </div>
+            <a href="/admin/settings"
+              className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-black"
+              style={{ background: 'var(--accent)' }}>
+              Go to Settings →
+            </a>
           </div>
         )}
         {importError && (
