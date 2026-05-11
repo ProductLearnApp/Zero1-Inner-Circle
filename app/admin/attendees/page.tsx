@@ -64,6 +64,7 @@ export default function AttendeesPage() {
   const [importError, setImportError] = useState<string | null>(null)
 
   const [statusMenuId, setStatusMenuId] = useState<string | null>(null)
+  const [actionLoading, setActionLoading] = useState<string | null>(null) // attendee id
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadEvent() }, [])
@@ -155,6 +156,29 @@ export default function AttendeesPage() {
   async function handleDelete(id: string) {
     if (!confirm('Delete this attendee?')) return
     await fetch(`/api/admin/attendees/${id}`, { method: 'DELETE' })
+    if (event) loadAttendees(event.id)
+  }
+
+  async function handleManualCheckin(id: string) {
+    if (!confirm('Manually mark this attendee as checked in?')) return
+    setActionLoading(id + ':checkin')
+    await fetch(`/api/admin/attendees/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ manualCheckin: true }),
+    })
+    setActionLoading(null)
+    if (event) loadAttendees(event.id)
+  }
+
+  async function handleRefreshQR(id: string) {
+    setActionLoading(id + ':qr')
+    await fetch(`/api/admin/attendees/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ regenerateQR: true }),
+    })
+    setActionLoading(null)
     if (event) loadAttendees(event.id)
   }
 
@@ -350,14 +374,14 @@ export default function AttendeesPage() {
             style={{
               color: 'rgba(102,102,102,0.8)',
               borderColor: 'rgba(37,37,37,0.6)',
-              gridTemplateColumns: '1fr 1fr 140px 160px 72px 40px 40px',
+              gridTemplateColumns: '1fr 1fr 140px 160px 72px 40px 40px 40px',
             }}
           >
             <span>Name</span>
             <span>Phone</span>
             <span>Status</span>
             <span>Check-in</span>
-            <span style={{ gridColumn: '5 / 8', textAlign: 'right' }}>Actions</span>
+            <span style={{ gridColumn: '5 / 9', textAlign: 'right' }}>Actions</span>
           </div>
 
           {/* Rows */}
@@ -380,7 +404,7 @@ export default function AttendeesPage() {
                     key={a.id}
                     className="grid items-center px-6 hover:bg-white/[0.03] transition-colors"
                     style={{
-                      gridTemplateColumns: '1fr 1fr 140px 160px 72px 40px 40px',
+                      gridTemplateColumns: '1fr 1fr 140px 160px 72px 40px 40px 40px',
                       height: 60,
                       borderBottom: isLast ? 'none' : '1px solid rgba(37,37,37,0.4)',
                     }}
@@ -439,8 +463,8 @@ export default function AttendeesPage() {
                       )}
                     </div>
 
-                    {/* Check-in */}
-                    <div>
+                    {/* Col 4 — Check-in status + manual check-in button */}
+                    <div className="flex items-center gap-2">
                       {a.checkedIn ? (
                         <div className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#30b0cf' }} />
@@ -451,6 +475,16 @@ export default function AttendeesPage() {
                             </span>
                           )}
                         </div>
+                      ) : a.status === 'SELECTED' ? (
+                        <button
+                          onClick={() => handleManualCheckin(a.id)}
+                          disabled={actionLoading === a.id + ':checkin'}
+                          title="Manual check-in (no QR scan)"
+                          className="h-6 px-2 rounded text-[11px] font-semibold transition hover:opacity-80 disabled:opacity-40"
+                          style={{ background: 'rgba(48,176,207,0.15)', border: '0.6px solid rgba(48,176,207,0.4)', color: '#30b0cf' }}
+                        >
+                          {actionLoading === a.id + ':checkin' ? '…' : '✓ Check in'}
+                        </button>
                       ) : (
                         <span className="text-sm" style={{ color: 'rgba(102,102,102,0.4)' }}>—</span>
                       )}
@@ -471,7 +505,22 @@ export default function AttendeesPage() {
                       ) : <span />}
                     </div>
 
-                    {/* Col 6 — WhatsApp */}
+                    {/* Col 6 — Refresh QR (admin only, regenerates JWT with current secret) */}
+                    <div className="flex justify-center">
+                      {(a.status === 'SELECTED' || a.status === 'CHECKED_IN') ? (
+                        <button
+                          onClick={() => handleRefreshQR(a.id)}
+                          disabled={actionLoading === a.id + ':qr'}
+                          title="Refresh QR (regenerate pass QR code)"
+                          className="w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold transition hover:opacity-80 disabled:opacity-40"
+                          style={{ background: '#1a1a1d', border: '0.6px solid #252525', color: 'rgba(255,255,255,0.5)' }}
+                        >
+                          {actionLoading === a.id + ':qr' ? '…' : '↺'}
+                        </button>
+                      ) : <span />}
+                    </div>
+
+                    {/* Col 7 — WhatsApp */}
                     <div className="flex justify-center">
                       {(a.status === 'SELECTED' || a.status === 'CHECKED_IN') ? (
                         <button
@@ -487,7 +536,7 @@ export default function AttendeesPage() {
                       ) : <span />}
                     </div>
 
-                    {/* Col 7 — Delete */}
+                    {/* Col 8 — Delete */}
                     <div className="flex justify-center">
                       <button
                         onClick={() => handleDelete(a.id)}

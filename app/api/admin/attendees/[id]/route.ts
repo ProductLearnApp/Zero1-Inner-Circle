@@ -23,7 +23,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const body = await req.json()
-    const { status, seatLabel } = body as { status?: AttendeeStatus; seatLabel?: string }
+    const { status, seatLabel, manualCheckin, regenerateQR } = body as {
+      status?: AttendeeStatus
+      seatLabel?: string
+      manualCheckin?: boolean
+      regenerateQR?: boolean
+    }
 
     const attendee = await prisma.attendee.findUnique({
       where: { id: params.id },
@@ -34,6 +39,35 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     const updateData: Record<string, unknown> = {}
 
     if (seatLabel !== undefined) updateData.seatLabel = seatLabel
+
+    // Manual check-in (bypass QR scan)
+    if (manualCheckin) {
+      updateData.checkedIn = true
+      updateData.checkedInAt = new Date()
+      updateData.status = AttendeeStatus.CHECKED_IN
+    }
+
+    // Regenerate QR payload using the current QR_SECRET
+    if (regenerateQR) {
+      const seat = (seatLabel ?? attendee.seatLabel) ?? ''
+      updateData.qrPayload = generateQRPayload({
+        attendeeId: attendee.id,
+        eventId: attendee.eventId,
+        passType: 'primary',
+        name: attendee.name,
+        seatLabel: seat,
+      })
+      updateData.passUrl = `/pass/${attendee.id}`
+      if (attendee.plusOneName && attendee.plusOnePhone) {
+        updateData.plusOneQrPayload = generateQRPayload({
+          attendeeId: attendee.id,
+          eventId: attendee.eventId,
+          passType: 'plusone',
+          name: attendee.plusOneName,
+          seatLabel: seat,
+        })
+      }
+    }
 
     if (status && status !== attendee.status) {
       updateData.status = status
