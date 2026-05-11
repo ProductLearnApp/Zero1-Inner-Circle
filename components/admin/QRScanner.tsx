@@ -81,7 +81,7 @@ export default function QRScanner({ onResult }: Props) {
         const MAX_W = 960
         let lastScan = 0
 
-        function tick(now: number) {
+        const tick = (now: number) => {
           if (cancelled) return
           rafRef.current = requestAnimationFrame(tick)
 

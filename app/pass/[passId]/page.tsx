@@ -17,14 +17,28 @@ export default async function PassPage({ params }: Props) {
   return (
     <PassClient
       attendee={{
-        ...attendee,
-        checkedInAt:        attendee.checkedInAt?.toISOString()        ?? null,
-        plusOneCheckedInAt: attendee.plusOneCheckedInAt?.toISOString() ?? null,
-        uploadedAt:         attendee.uploadedAt.toISOString(),
-        notifiedAt:         attendee.notifiedAt?.toISOString()         ?? null,
+        id:               attendee.id,
+        name:             attendee.name,
+        phone:            attendee.phone,
+        status:           attendee.status,
+        seatLabel:        attendee.seatLabel,
+        checkedIn:        attendee.checkedIn,
+        plusOneName:      attendee.plusOneName,
+        plusOnePhone:     attendee.plusOnePhone,
+        plusOneCheckedIn: attendee.plusOneCheckedIn,
         // only expose QR payloads to selected/checked-in attendees
-        qrPayload:          isSelected ? attendee.qrPayload          : null,
-        plusOneQrPayload:   isSelected ? attendee.plusOneQrPayload    : null,
+        qrPayload:        isSelected ? attendee.qrPayload        : null,
+        plusOneQrPayload: isSelected ? attendee.plusOneQrPayload : null,
+        event: {
+          id:           attendee.event.id,
+          name:         attendee.event.name,
+          date:         attendee.event.date,
+          time:         attendee.event.time,
+          city:         attendee.event.city,
+          venue:        attendee.event.venue,
+          heroImageUrl: attendee.event.heroImageUrl,
+          settings:     attendee.event.settings,
+        },
       }}
     />
   )
