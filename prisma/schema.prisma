@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id           String    @id @default(cuid())
+  name         String
+  date         String
+  time         String
+  city         String
+  venue        String
+  heroImageUrl String?
+  maxCapacity  Int       @default(30)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  attendees    Attendee[]
+  settings     EventSettings?
+}
+
+model EventSettings {
+  id                         String  @id @default(cuid())
+  eventId                    String  @unique
+  event                      Event   @relation(fields: [eventId], references: [id])
+  logoUrl                    String?
+  passBackgroundUrl          String?
+  accentColor                String  @default("#F2BA30")
+  allowPlusOne               Boolean @default(true)
+  whatsappTemplateSelected   String?
+  whatsappTemplateReminder   String?
+  whatsappTemplatePlusOne    String?
+}
+
+model Attendee {
+  id                 String         @id @default(cuid())
+  eventId            String
+  event              Event          @relation(fields: [eventId], references: [id])
+  name               String
+  phone              String
+  status             AttendeeStatus @default(NOT_SELECTED)
+  passUrl            String?
+  qrPayload          String?
+  seatLabel          String?
+  checkedIn          Boolean        @default(false)
+  checkedInAt        DateTime?
+  plusOneName        String?
+  plusOnePhone       String?
+  plusOneQrPayload   String?
+  plusOneCheckedIn   Boolean        @default(false)
+  plusOneCheckedInAt DateTime?
+  uploadedAt         DateTime       @default(now())
+  notifiedAt         DateTime?
+
+  @@unique([eventId, phone])
+}
+
+enum AttendeeStatus {
+  NOT_SELECTED
+  SELECTED
+  REJECTED
+  CHECKED_IN
+}

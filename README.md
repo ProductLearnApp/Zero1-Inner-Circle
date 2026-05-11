@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zero1 Money Circle
 
-## Getting Started
+Event management + QR check-in system built with Next.js 14, Prisma, PostgreSQL, and Gupshup WhatsApp.
 
-First, run the development server:
+## Setup
+
+### 1. Environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in:
+- `DATABASE_URL` — Supabase or local Postgres connection string
+- `ADMIN_SECRET` — any password for the admin dashboard
+- `QR_SECRET` — 32+ char random string for signing QR JWTs
+- `GUPSHUP_*` — from your Gupshup dashboard
+- `NEXT_PUBLIC_BASE_URL` — your deployed URL (e.g. `https://zero1.vercel.app`)
+
+### 2. Database
+
+```bash
+# Apply migrations (creates tables)
+npx prisma migrate deploy
+
+# Seed with event + 8 dummy attendees (5 selected with QRs, 2 not-selected, 1 rejected)
+npm run db:seed
+```
+
+### 3. Dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**One-command dev setup** (after adding `DATABASE_URL` to `.env.local`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx prisma migrate deploy && npm run db:seed && npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  admin/                  → password-protected admin UI
+    page.tsx              → login
+    dashboard/            → stats overview
+    attendees/            → CSV upload + attendees table
+    checkin/              → QR scanner
+    settings/             → event config + images + WhatsApp templates
+  pass/[passId]/          → public QR pass page
+  api/
+    admin/                → protected admin API routes
+    pass/[passId]/        → public pass data
+    plusone/invite/       → +1 registration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+lib/
+  prisma.ts               → singleton Prisma client
+  auth.ts                 → session cookie helpers
+  qr.ts                   → JWT QR generation + verification
+  whatsapp.ts             → Gupshup REST API wrapper
+  phone.ts                → E.164 phone normalisation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+prisma/
+  schema.prisma
+  seed.ts
+```
 
-## Deploy on Vercel
+## Key flows
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### CSV upload → QR generation
+1. Admin uploads CSV (columns: `name`, `phone`, `status`, optional `seatLabel`)
+2. `POST /api/admin/attendees/upload` upserts by `(eventId, phone)`
+3. Attendees marked `selected` get a signed JWT stored in `qrPayload` and a `passUrl`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Attendee marked Selected via UI
+`PATCH /api/admin/attendees/[id]` with `{ status: "SELECTED" }` generates QR + optionally fires WhatsApp
+
+### QR check-in
+1. Admin scanner (`/admin/checkin`) decodes QR with `html5-qrcode`
+2. Calls `POST /api/admin/checkin/verify` with the raw JWT token
+3. Server verifies signature, checks DB flags, marks `checkedIn`
+
+### +1 invite
+1. Attendee taps "Invite +1" on `/pass/[passId]`
+2. `POST /api/plusone/invite` generates a second JWT (`passType: plusone`) and sends WhatsApp to the +1
+3. Pass page shows both QR codes side-by-side
+
+## Deployment (Railway)
+
+### Deploy steps
+
+1. Push this repo to GitHub.
+2. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub** → select the repo, set **Root Directory** to `zero1/`.
+3. Add a **PostgreSQL** plugin — Railway injects `DATABASE_URL` automatically.
+4. Set the following env vars in the Railway dashboard:
+
+| Variable | Value |
+|---|---|
+| `ADMIN_EMAIL` | e.g. `admin@yourdomain.com` |
+| `ADMIN_SECRET` | a strong password |
+| `QR_SECRET` | 32+ char random string |
+| `NEXT_PUBLIC_BASE_URL` | your Railway public URL |
+| `NEXT_PUBLIC_EVENT_NAME` | event name |
+| `NEXT_PUBLIC_EVENT_DATE` | e.g. `May 24, 2025` |
+| `NEXT_PUBLIC_EVENT_TIME` | e.g. `6:00 PM – 9:00 PM` |
+| `NEXT_PUBLIC_EVENT_CITY` | city |
+| `NEXT_PUBLIC_EVENT_VENUE` | venue |
+| `GUPSHUP_API_KEY` | from Gupshup dashboard |
+| `GUPSHUP_SOURCE_NUMBER` | WhatsApp number |
+| `GUPSHUP_APP_NAME` | app name |
+
+5. Railway automatically runs:
+   - `npm ci` → `postinstall` (prisma generate) → `npm run build` (prisma generate + next build)
+   - On start: `npx prisma migrate deploy && npm start`
+
+6. After first successful deploy, seed the production database once:
+   ```bash
+   DATABASE_URL=<your_railway_postgres_url> npm run db:seed
+   ```
+
+### How it works
+
+```
+Railway Postgres  ──►  App Service
+                        npm ci
+                        postinstall: prisma generate
+                        build:       prisma generate + next build
+                        start:       prisma migrate deploy + next start
+```
+
+- `prisma migrate deploy` runs every time the app starts — it is a no-op when schema is already up to date, and applies new migrations safely on redeploy.
+- `railway.json` at the project root configures the builder (Nixpacks) and the start command.
+- `/api/health` is the healthcheck endpoint Railway pings after each deploy.
