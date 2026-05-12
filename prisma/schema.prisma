@@ -14,6 +14,7 @@ model Event {
   time         String
   city         String
   venue        String
+  price        String?
   heroImageUrl String?
   maxCapacity  Int       @default(30)
   isActive     Boolean   @default(true)
@@ -33,6 +34,15 @@ model EventSettings {
   whatsappTemplateSelected   String?
   whatsappTemplateReminder   String?
   whatsappTemplatePlusOne    String?
+  missionFormUrl             String?
+  instagramUrl               String?
+  emailAddress               String?
+  aboutText                  String?
+  partnerLogoUrl             String?
+  activities                 Json?
+  timeline                   Json?
+  thingsToKnow               Json?
+  sessionDescription         String?
 }
 
 model Attendee {

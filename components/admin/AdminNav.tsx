@@ -8,6 +8,8 @@ const links = [
   { href: '/admin/attendees', label: 'Attendees' },
   { href: '/admin/checkin',   label: 'Check-in'  },
   { href: '/admin/settings',  label: 'Settings'  },
+  { href: '/admin/meetup',    label: 'Meetup'    },
+  { href: '/admin/media',     label: 'Media'     },
 ]
 
 export default function AdminNav() {
@@ -67,6 +69,19 @@ export default function AdminNav() {
             )
           })}
         </nav>
+
+        {/* View landing page */}
+        <div className="px-[11px] pb-3">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center h-10 px-4 rounded-lg text-sm transition-colors"
+            style={{ color: 'rgba(102,102,102,0.55)', border: '1px dashed #2a2a2a' }}
+          >
+            View Landing Page ↗
+          </a>
+        </div>
 
         {/* User footer */}
         <div className="flex-shrink-0">

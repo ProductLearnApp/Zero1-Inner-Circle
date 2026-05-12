@@ -37,3 +37,6 @@ next-env.d.ts
 
 # bare .env (not .local) — never commit secrets
 .env
+
+# Local uploads (stored on Railway Volume in prod)
+uploads/

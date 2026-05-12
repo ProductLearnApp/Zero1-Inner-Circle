@@ -11,6 +11,11 @@ const geistSans = localFont({
 export const metadata: Metadata = {
   title: 'Zero1 Money Circle',
   description: 'Event management & QR check-in',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 }
 
 export const viewport: Viewport = {

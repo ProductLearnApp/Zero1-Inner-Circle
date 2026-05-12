@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(req: NextRequest) {
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
       time: string
       city: string
       venue: string
+      price?: string
       heroImageUrl?: string
       maxCapacity?: number
       settings?: {
@@ -42,6 +44,14 @@ export async function POST(req: NextRequest) {
         whatsappTemplateSelected?: string
         whatsappTemplateReminder?: string
         whatsappTemplatePlusOne?: string
+        missionFormUrl?: string
+        instagramUrl?: string
+        emailAddress?: string
+        aboutText?: string
+        partnerLogoUrl?: string
+        activities?: Prisma.InputJsonValue
+        timeline?: Prisma.InputJsonValue
+        thingsToKnow?: Prisma.InputJsonValue
       }
     }
 
@@ -82,6 +92,7 @@ export async function PATCH(req: NextRequest) {
       time?: string
       city?: string
       venue?: string
+      price?: string
       heroImageUrl?: string
       maxCapacity?: number
       isActive?: boolean
@@ -93,6 +104,14 @@ export async function PATCH(req: NextRequest) {
         whatsappTemplateSelected?: string
         whatsappTemplateReminder?: string
         whatsappTemplatePlusOne?: string
+        missionFormUrl?: string
+        instagramUrl?: string
+        emailAddress?: string
+        aboutText?: string
+        partnerLogoUrl?: string
+        activities?: Prisma.InputJsonValue
+        timeline?: Prisma.InputJsonValue
+        thingsToKnow?: Prisma.InputJsonValue
       }
     }
 

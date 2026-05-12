@@ -10,6 +10,7 @@ type EventForm = {
   time: string
   city: string
   venue: string
+  price: string
   maxCapacity: number
   heroImageUrl: string
   settings: {
@@ -30,6 +31,7 @@ const DEFAULTS: EventForm = {
   time:  process.env.NEXT_PUBLIC_EVENT_TIME  ?? '',
   city:  process.env.NEXT_PUBLIC_EVENT_CITY  ?? '',
   venue: process.env.NEXT_PUBLIC_EVENT_VENUE ?? '',
+  price: '₹3,000',
   maxCapacity: 30,
   heroImageUrl: '',
   settings: {
@@ -61,6 +63,7 @@ export default function SettingsPage() {
           setNoEvent(true)
         } else {
           setNoEvent(false)
+          const s = event.settings
           setForm({
             id:           event.id,
             name:         event.name         ?? '',
@@ -68,16 +71,17 @@ export default function SettingsPage() {
             time:         event.time         ?? '',
             city:         event.city         ?? '',
             venue:        event.venue        ?? '',
+            price:        event.price        ?? '₹3,000',
             maxCapacity:  event.maxCapacity  ?? 30,
             heroImageUrl: event.heroImageUrl ?? '',
             settings: {
-              accentColor:               event.settings?.accentColor               ?? '#F2BA30',
-              allowPlusOne:              event.settings?.allowPlusOne              ?? true,
-              logoUrl:                   event.settings?.logoUrl                   ?? '',
-              passBackgroundUrl:         event.settings?.passBackgroundUrl         ?? '',
-              whatsappTemplateSelected:  event.settings?.whatsappTemplateSelected  ?? '',
-              whatsappTemplateReminder:  event.settings?.whatsappTemplateReminder  ?? '',
-              whatsappTemplatePlusOne:   event.settings?.whatsappTemplatePlusOne   ?? '',
+              accentColor:              s?.accentColor              ?? '#F2BA30',
+              allowPlusOne:             s?.allowPlusOne             ?? true,
+              logoUrl:                  s?.logoUrl                  ?? '',
+              passBackgroundUrl:        s?.passBackgroundUrl        ?? '',
+              whatsappTemplateSelected: s?.whatsappTemplateSelected ?? '',
+              whatsappTemplateReminder: s?.whatsappTemplateReminder ?? '',
+              whatsappTemplatePlusOne:  s?.whatsappTemplatePlusOne  ?? '',
             },
           })
         }
@@ -108,16 +112,17 @@ export default function SettingsPage() {
       time:         form.time,
       city:         form.city,
       venue:        form.venue,
+      price:        form.price        || undefined,
       maxCapacity:  Number(form.maxCapacity),
-      heroImageUrl: form.heroImageUrl  || undefined,
+      heroImageUrl: form.heroImageUrl || undefined,
       settings: {
-        accentColor:               form.settings.accentColor,
-        allowPlusOne:              form.settings.allowPlusOne,
-        logoUrl:                   form.settings.logoUrl              || undefined,
-        passBackgroundUrl:         form.settings.passBackgroundUrl    || undefined,
-        whatsappTemplateSelected:  form.settings.whatsappTemplateSelected  || undefined,
-        whatsappTemplateReminder:  form.settings.whatsappTemplateReminder  || undefined,
-        whatsappTemplatePlusOne:   form.settings.whatsappTemplatePlusOne   || undefined,
+        accentColor:              form.settings.accentColor,
+        allowPlusOne:             form.settings.allowPlusOne,
+        logoUrl:                  form.settings.logoUrl                  || undefined,
+        passBackgroundUrl:        form.settings.passBackgroundUrl        || undefined,
+        whatsappTemplateSelected: form.settings.whatsappTemplateSelected || undefined,
+        whatsappTemplateReminder: form.settings.whatsappTemplateReminder || undefined,
+        whatsappTemplatePlusOne:  form.settings.whatsappTemplatePlusOne  || undefined,
       },
     }
 
@@ -233,6 +238,13 @@ export default function SettingsPage() {
               <Input value={form.settings.accentColor} onChange={v => setSetting('accentColor', v)}
                 placeholder="#F2BA30" />
             </div>
+          </Field>
+        </Section>
+
+        {/* Event price */}
+        <Section title="Ticket Details">
+          <Field label="Price per head" hint="Displayed on the landing page (e.g. ₹3,000)">
+            <Input value={form.price} onChange={v => set('price', v)} placeholder="₹3,000" />
           </Field>
         </Section>
 

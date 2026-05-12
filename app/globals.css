@@ -1,3 +1,8 @@
+/* @import rules must precede all other CSS statements */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Satisfy&display=swap');
+@import url('https://fonts.cdnfonts.com/css/gilroy-bold');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
