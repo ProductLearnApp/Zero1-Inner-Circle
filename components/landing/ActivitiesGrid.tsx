@@ -55,7 +55,7 @@ export function ActivitiesGrid({ event }: { event: LandingEvent }) {
         <SectionTitle>{`Skills you'll learn`}</SectionTitle>
         <div className="flex flex-col" style={{ gap: 60, width: 820 }}>
           {/* Row 1: 3 items */}
-          <div className="flex" style={{ gap: 30 }}>
+          <div className="flex justify-center" style={{ gap: 30 }}>
             {row1.map((item, i) => (
               <div key={i} style={{ width: i === 0 ? 190 : i === 1 ? 228 : 224 }}>
                 <ActivityCard item={item} desktop />
