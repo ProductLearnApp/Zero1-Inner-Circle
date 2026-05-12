@@ -4,7 +4,6 @@ import {
   ASSET_DOT_ACTIVE_OUTER, ASSET_DOT_ACTIVE_INNER,
   ASSET_DOT_IDLE_OUTER, ASSET_DOT_IDLE_INNER,
   ASSET_DOT_IDLE3_OUTER,
-  ASSET_V_CONNECTOR_123, ASSET_V_CONNECTOR_124, ASSET_V_CONNECTOR_125,
 } from './assets'
 
 const STEPS = [
@@ -37,7 +36,6 @@ const D_CONNECTORS = [103, 80, 104]
 
 function Dot({ active, size }: { active: boolean; size: 'sm' | 'lg' }) {
   const s = size === 'lg' ? 25 : 14
-  const inner = size === 'lg' ? { outer: active ? ASSET_DOT_ACTIVE_OUTER : ASSET_DOT_IDLE3_OUTER, inner: ASSET_DOT_ACTIVE_INNER } : null
   if (size === 'lg') {
     return (
       <div className="relative shrink-0" style={{ width: s, height: s }}>

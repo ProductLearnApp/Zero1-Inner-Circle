@@ -42,7 +42,7 @@ function LineDiamond({ flip, large }: { flip?: boolean; large?: boolean }) {
   )
 }
 
-export function SectionTitle({ children, large }: Props) {
+export function SectionTitle({ children }: Props) {
   return (
     <>
       {/* Mobile */}

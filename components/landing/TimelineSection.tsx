@@ -1,6 +1,6 @@
 import { SectionTitle } from './SectionTitle'
 import type { TimelineItem, LandingEvent } from './types'
-import { ASSET_CARD_BG, ASSET_DOT_OUTER, ASSET_DOT_INNER } from './assets'
+import { ASSET_CARD_BG } from './assets'
 
 /*
  * Fresh connector asset URLs from Figma (5768:2398, fetched 2026-05-11)
@@ -44,7 +44,7 @@ function MobileCard({ item, accent }: { item: TimelineItem; accent: string }) {
 }
 
 /* ─── Desktop card 217×232px ──────────────────────────────── */
-function DesktopCard({ item, accent, align = 'center' }: { item: TimelineItem; accent: string; align?: 'center' | 'left' | 'right' }) {
+function DesktopCard({ item, accent }: { item: TimelineItem; accent: string; align?: 'center' | 'left' | 'right' }) {
   const words = item.title.split(' ')
   const last  = words.pop()!
   const rest  = words.join(' ')
@@ -71,7 +71,7 @@ function DesktopCard({ item, accent, align = 'center' }: { item: TimelineItem; a
   )
 }
 
-function Dot25({ active }: { active?: boolean }) {
+function Dot25() {
   return (
     <div className="relative shrink-0" style={{ width: 25, height: 25 }}>
       <img alt="" src={DOT_OUTER_FRESH} className="absolute inset-0 w-full h-full" />

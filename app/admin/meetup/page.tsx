@@ -73,7 +73,7 @@ const DEFAULT_FORM: MeetupForm = {
 export default function MeetupPage() {
   const [form, setForm]       = useState<MeetupForm>(DEFAULT_FORM)
   const [loading, setLoading] = useState(true)
-  const [noEvent, setNoEvent] = useState(false)
+  const [, setNoEvent] = useState(false)
   const [saving, setSaving]   = useState(false)
   const [saved, setSaved]     = useState(false)
   const [error, setError]     = useState<string | null>(null)

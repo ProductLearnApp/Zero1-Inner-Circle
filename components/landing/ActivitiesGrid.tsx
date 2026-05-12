@@ -1,6 +1,6 @@
 import { SectionTitle } from './SectionTitle'
 import type { ActivityItem, LandingEvent } from './types'
-import { ASSET_ICON_STACK, ASSET_ICON_STACK_ALT, ASSET_ICON_BRAIN, ASSET_ICON_MONEY_ALT } from './assets'
+import { ASSET_ICON_STACK_ALT, ASSET_ICON_BRAIN, ASSET_ICON_MONEY_ALT } from './assets'
 
 const ICONS: Record<string, string> = {
   stack: ASSET_ICON_STACK_ALT,
