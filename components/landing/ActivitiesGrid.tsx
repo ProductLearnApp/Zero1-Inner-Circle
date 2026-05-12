@@ -51,9 +51,9 @@ export function ActivitiesGrid({ event }: { event: LandingEvent }) {
       </div>
 
       {/* ── Desktop: "Skills you'll learn" 3-col + 2-col grid ── */}
-      <div className="hidden md:flex flex-col" style={{ gap: 56, width: 820 }}>
+      <div className="hidden md:flex flex-col items-center w-full" style={{ gap: 56 }}>
         <SectionTitle>{`Skills you'll learn`}</SectionTitle>
-        <div className="flex flex-col" style={{ gap: 60 }}>
+        <div className="flex flex-col" style={{ gap: 60, width: 820 }}>
           {/* Row 1: 3 items */}
           <div className="flex" style={{ gap: 30 }}>
             {row1.map((item, i) => (

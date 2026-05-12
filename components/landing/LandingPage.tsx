@@ -63,8 +63,8 @@ export function LandingPage({ event }: { event: LandingEvent }) {
           <EventDetails event={event} />
         </div>
 
-        {/* What you will get (702px, centred) — gap from top: 1368-748=620, minus 36+~content ≈ let's use 120px top margin */}
-        <div className="flex flex-col items-center" style={{ marginTop: 120 }}>
+        {/* Skills you'll learn — same 1000px container as above so section title lines up */}
+        <div className="flex flex-col items-center" style={{ marginTop: 120, width: 1000 }}>
           <ActivitiesGrid event={event} />
         </div>
 
