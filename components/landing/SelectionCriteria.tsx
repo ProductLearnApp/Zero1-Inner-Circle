@@ -29,8 +29,6 @@ const STEPS = [
   },
 ]
 
-/* Mobile connector heights between dots (from Figma Vector123/124/125) */
-const M_CONNECTORS = [112, 68, 124]
 /* Desktop connector heights */
 const D_CONNECTORS = [103, 80, 104]
 
@@ -62,27 +60,24 @@ export function SelectionCriteria({ event }: { event: LandingEvent }) {
       {/* ── Mobile ── */}
       <div className="flex flex-col px-4 md:hidden" style={{ gap: 18 }}>
         <SectionTitle>Selection criteria</SectionTitle>
-        <div className="flex" style={{ gap: 22 }}>
-          {/* dots + connectors */}
-          <div className="flex flex-col items-center shrink-0" style={{ width: 14 }}>
-            {STEPS.map((step, i) => (
-              <div key={i} className="flex flex-col items-center">
+        {/* Inline per-row: dot + connector stretch to match text height */}
+        <div className="flex flex-col" style={{ gap: 0 }}>
+          {STEPS.map((step, i) => (
+            <div key={i} className="flex" style={{ gap: 22 }}>
+              {/* Dot + stretching connector */}
+              <div className="flex flex-col items-center shrink-0" style={{ width: 14, paddingBottom: i < STEPS.length - 1 ? 18 : 0 }}>
                 <Dot active={step.active} size="sm" />
                 {i < STEPS.length - 1 && (
-                  <div style={{ width: 1, height: M_CONNECTORS[i], marginTop: 14, marginBottom: 14, background: 'rgba(255,255,255,0.15)' }} />
+                  <div className="flex-1 mt-1" style={{ width: 1, background: 'rgba(255,255,255,0.15)', minHeight: 12 }} />
                 )}
               </div>
-            ))}
-          </div>
-          {/* text */}
-          <div className="flex flex-col" style={{ width: 282 }}>
-            {STEPS.map((step, i) => (
-              <div key={i} style={{ paddingBottom: i < STEPS.length - 1 ? M_CONNECTORS[i] + 28 : 0 }}>
+              {/* Text */}
+              <div style={{ flex: 1, paddingBottom: i < STEPS.length - 1 ? 18 : 0 }}>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 700, fontSize: 14, lineHeight: '20px', color: '#fff' }}>{step.title}</p>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb', marginTop: 4 }}>{step.body}</p>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
         <div className="flex justify-center">
           <a href={missionUrl} target="_blank" rel="noopener noreferrer"

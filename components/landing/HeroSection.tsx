@@ -16,8 +16,8 @@ import { ASSET_HERO_IMG1 } from './assets'
  *   subtitle at 14px below wordmark (gap 8px)
  */
 
-const BOLT_MOBILE    = 'https://www.figma.com/api/mcp/asset/881959a2-4b41-4f38-b15d-169bcda1e452'
-const WORDMARK_MOBILE  = 'https://www.figma.com/api/mcp/asset/2d50166c-797c-4ca8-b463-4eb66d5fe206'
+const BOLT_MOBILE    = 'https://www.figma.com/api/mcp/asset/4c488797-49be-4926-9d2e-d65640022ae8' // Group48096174
+const WORDMARK_MOBILE  = 'https://www.figma.com/api/mcp/asset/f05b23b1-bd08-488d-97a5-028d17e4f8a0' // Group8
 const WORDMARK_DESKTOP = 'https://www.figma.com/api/mcp/asset/59f6740d-7f96-4a31-bb60-87f92ec2834e'
 
 const DEFAULT_ABOUT = [
@@ -32,36 +32,45 @@ export function HeroSection({ event }: { event: LandingEvent }) {
 
   return (
     <>
-      {/* ── Mobile hero (420px) ── */}
-      <div className="relative w-full overflow-hidden md:hidden" style={{ height: 420, background: '#0f071a' }}>
-        {/* Hero photo */}
-        <img
-          alt=""
-          src={heroImage}
-          className="absolute w-full pointer-events-none object-cover"
-          style={{ top: 0, left: 0, height: '100%' }}
-        />
-        {/* Orange tint */}
-        <div className="absolute inset-0" style={{ background: 'rgba(242,186,48,0.39)' }} />
-        {/* Bottom gradient fades into page bg */}
-        <div className="absolute left-0 right-0 bottom-0" style={{
-          height: 280,
+      {/* ── Mobile hero — photo is absolutely positioned; text block drives height ── */}
+      <div className="relative w-full md:hidden" style={{ background: '#0f071a' }}>
+        {/* Photo + tint — clipped to 377px, doesn't affect parent height */}
+        <div className="absolute inset-x-0 top-0 overflow-hidden" style={{ height: 377 }}>
+          <img
+            alt=""
+            src={heroImage}
+            className="absolute w-full h-full pointer-events-none object-cover object-center"
+          />
+          <div className="absolute inset-0" style={{ background: 'rgba(242,186,48,0.39)' }} />
+        </div>
+        {/* Gradient — fades photo into page bg */}
+        <div className="absolute left-0 right-0" style={{
+          top: 97, height: 280,
           background: 'linear-gradient(0deg, #0f071a 0%, rgba(15,7,26,0.7) 50%, transparent 100%)',
         }} />
 
-        {/* "Zero1 presents" + wordmark + subtitle */}
-        <div className="absolute flex flex-col items-center w-full px-6" style={{ top: 200, gap: 12 }}>
-          <div className="flex items-center justify-center" style={{ gap: 2 }}>
-            <img alt="Zero1" src={BOLT_MOBILE} style={{ height: 13.29, width: 64.8 }} />
-            <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 16, lineHeight: 1 }}>
-              presents
-            </p>
+        {/* Text block — paddingTop positions it at y=136 (= Figma y=222 − nav 86px) */}
+        <div className="relative flex flex-col items-center w-full px-4" style={{ paddingTop: 136, paddingBottom: 32, gap: 18 }}>
+          {/* "Zero1 presents" + wordmark + subtitle */}
+          <div className="flex flex-col items-center w-full" style={{ gap: 12 }}>
+            <div className="flex items-center justify-center" style={{ gap: 2 }}>
+              <img alt="Zero1" src={BOLT_MOBILE} style={{ height: 13.29, width: 64.8 }} />
+              <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 16, lineHeight: 1 }}>
+                presents
+              </p>
+            </div>
+            <div className="flex flex-col items-center w-full" style={{ gap: 8 }}>
+              <img alt="The Inner Circle" src={WORDMARK_MOBILE} style={{ height: 23.98, width: 176.27, display: 'block' }} />
+              <p className="text-center w-full" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontStyle: 'italic', fontSize: 14, lineHeight: '20px', color: '#fff' }}>
+                Honest money conversations, so you can stop chasing
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-center w-full" style={{ gap: 8 }}>
-            <img alt="The Inner Circle" src={WORDMARK_MOBILE} style={{ height: 23.98, width: 176.27, display: 'block' }} />
-            <p className="text-center w-full" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontStyle: 'italic', fontSize: 14, lineHeight: '20px', color: '#fff' }}>
-              Honest money conversations, so you can stop chasing
-            </p>
+          {/* About paragraphs — same overlay, gap-18 below header */}
+          <div className="flex flex-col w-full" style={{ gap: 0 }}>
+            {paragraphs.map((p, i) => (
+              <p key={i} className="text-center" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb' }}>{p}</p>
+            ))}
           </div>
         </div>
       </div>

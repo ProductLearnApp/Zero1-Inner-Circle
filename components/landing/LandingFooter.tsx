@@ -8,22 +8,20 @@ export function LandingFooter({ event }: { event: LandingEvent }) {
 
   return (
     <>
-      {/* ── Mobile footer: partner + Zero1 + copyright + social ── */}
+      {/* ── Mobile footer: Zero1 → partner → social → copyright (Figma 5768:2913) ── */}
       <div className="relative w-full md:hidden" style={{ background: '#0f071a' }}>
-        {/* Partner section */}
-        <div className="flex flex-col items-center px-4" style={{ paddingTop: 40, paddingBottom: 24, gap: 8 }}>
-          <p style={{ fontFamily: 'Satisfy,cursive', fontWeight: 400, fontSize: 12, lineHeight: 'normal', color: '#b7b5bb', letterSpacing: '0.24px', textAlign: 'center' }}>
-            In partnership with
-          </p>
-          <img alt="Partner" src={partnerLogo} style={{ maxHeight: 90, maxWidth: 180, objectFit: 'contain', opacity: 0.2 }} />
-        </div>
-        {/* Zero1 + copyright + social */}
-        <div className="flex flex-col items-center" style={{ paddingBottom: 40, gap: 24 }}>
+        <div className="flex flex-col items-center" style={{ paddingTop: 50, paddingBottom: 40, gap: 50 }}>
+          {/* Zero1 logo */}
           <img alt="Zero1" src={ASSET_ZERO1_LOGO_FOOTER} style={{ width: 122, height: 37 }} />
-          <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontSize: 12, lineHeight: '22px', color: '#65636a', textAlign: 'center', maxWidth: 281 }}>
-            This property is owned and managed by Zero1 by Zerodha. All rights reserved 2026 ©
-          </p>
-          <div className="flex items-center" style={{ gap: 12 }}>
+          {/* Partner */}
+          <div className="flex flex-col items-center" style={{ gap: 4 }}>
+            <p style={{ fontFamily: 'Satisfy,cursive', fontWeight: 400, fontSize: 13, lineHeight: 'normal', color: '#65636a', letterSpacing: '0.26px', textAlign: 'center' }}>
+              In partnership with
+            </p>
+            <img alt="Partner" src={partnerLogo} style={{ maxHeight: 50, maxWidth: 170, objectFit: 'contain', opacity: 0.2 }} />
+          </div>
+          {/* Social icons */}
+          <div className="flex items-center" style={{ gap: 13 }}>
             <a href={instagram || '#'} target={instagram ? '_blank' : undefined} rel="noopener noreferrer" aria-label="Instagram"
               className="relative overflow-hidden" style={{ width: 32, height: 32 }}>
               <img alt="Instagram" src={ASSET_INSTAGRAM} style={{ width: 20, height: 20, position: 'absolute', left: 6, top: 6 }} />
@@ -33,6 +31,10 @@ export function LandingFooter({ event }: { event: LandingEvent }) {
               <img alt="Email" src={ASSET_EMAIL} style={{ width: 20, height: 20, position: 'absolute', left: 6, top: 6 }} />
             </a>
           </div>
+          {/* Copyright */}
+          <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontSize: 13, lineHeight: '22px', color: '#535157', textAlign: 'center', maxWidth: 281 }}>
+            This property is owned and managed by Zero1 by Zerodha. All rights reserved 2026 ©
+          </p>
         </div>
       </div>
 
