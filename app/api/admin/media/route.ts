@@ -25,9 +25,9 @@ export async function GET() {
 
     for (const folder of folders) {
       const folderPath = path.join(base, folder)
-      let folderEntries: Awaited<ReturnType<typeof readdir>>
+      let folderEntries: import('fs').Dirent[]
       try {
-        folderEntries = await readdir(folderPath, { withFileTypes: true })
+        folderEntries = await readdir(folderPath, { withFileTypes: true }) as import('fs').Dirent[]
       } catch {
         continue
       }
