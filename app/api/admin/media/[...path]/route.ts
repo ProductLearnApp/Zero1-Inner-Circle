@@ -26,6 +26,10 @@ export async function GET(
     const base = getUploadDir()
     const resolved = path.resolve(base, ...segments)
 
+    // #region agent log
+    fetch('http://127.0.0.1:7554/ingest/866bc12d-c90a-4588-a31e-44da4cab020d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'5fbd79'},body:JSON.stringify({sessionId:'5fbd79',location:'media/[...path]/route.ts:26',message:'H-B/H-D: media serve invoked',data:{UPLOAD_DIR:process.env.UPLOAD_DIR??'(not set)',base,resolved,exists:existsSync(resolved)},hypothesisId:'H-B',runId:'run1',timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+
     // Guard against path traversal
     if (!resolved.startsWith(path.resolve(base))) {
       return new Response('Forbidden', { status: 403 })

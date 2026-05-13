@@ -14,6 +14,11 @@ type MediaData = {
   files: MediaFile[]
 }
 
+type MediaInfo = {
+  uploadDir: string
+  isPersisted: boolean
+}
+
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
@@ -31,16 +36,22 @@ export default function MediaPage() {
   const [copiedUrl, setCopiedUrl]         = useState<string | null>(null)
   const [deleting, setDeleting]           = useState<string | null>(null)
   const [dragOver, setDragOver]           = useState(false)
+  const [mediaInfo, setMediaInfo]         = useState<MediaInfo | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/media')
-      if (res.ok) {
-        const json = await res.json() as MediaData
+      const [mediaRes, infoRes] = await Promise.all([
+        fetch('/api/admin/media'),
+        fetch('/api/admin/media/info'),
+      ])
+      if (mediaRes.ok) {
+        const json = await mediaRes.json() as MediaData
         setData(json)
-        // Auto-select first folder if none selected
         setSelectedFolder(f => f ?? (json.folders[0] ?? null))
+      }
+      if (infoRes.ok) {
+        setMediaInfo(await infoRes.json() as MediaInfo)
       }
     } finally {
       setLoading(false)
@@ -233,6 +244,25 @@ export default function MediaPage() {
             onChange={e => e.target.files && uploadFiles(e.target.files)}
           />
         </div>
+
+        {/* Ephemeral storage warning */}
+        {mediaInfo && !mediaInfo.isPersisted && (
+          <div className="flex items-start gap-3 px-6 py-3 border-b flex-shrink-0"
+            style={{ background: 'rgba(234,179,8,0.08)', borderColor: 'rgba(234,179,8,0.25)' }}>
+            <span className="text-base flex-shrink-0 mt-0.5">⚠️</span>
+            <div>
+              <p className="text-xs font-semibold" style={{ color: '#f2ba30' }}>
+                Images will be lost on next deploy
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: 'rgba(242,186,48,0.7)' }}>
+                <code className="font-mono">UPLOAD_DIR</code> is not set — uploads are stored at{' '}
+                <code className="font-mono break-all">{mediaInfo.uploadDir}</code> which is wiped on every Railway
+                deployment. To fix: create a Railway Volume mounted at <code className="font-mono">/data</code> and
+                set <code className="font-mono">UPLOAD_DIR=/data/uploads</code> in your Railway variables.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Drop zone + grid */}
         <div
