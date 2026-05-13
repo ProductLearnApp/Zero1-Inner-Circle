@@ -108,8 +108,8 @@ export default function MediaPage() {
   }
 
   function copyUrl(url: string) {
-    const absolute = `${window.location.origin}${url}`
-    navigator.clipboard.writeText(absolute).then(() => {
+    // Copy the relative URL so it works regardless of environment (local vs Railway)
+    navigator.clipboard.writeText(url).then(() => {
       setCopiedUrl(url)
       setTimeout(() => setCopiedUrl(null), 2000)
     })

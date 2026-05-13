@@ -34,14 +34,13 @@ export function HeroSection({ event }: { event: LandingEvent }) {
     <>
       {/* ── Mobile hero — photo is absolutely positioned; text block drives height ── */}
       <div className="relative w-full md:hidden" style={{ background: '#0f071a' }}>
-        {/* Photo + tint — clipped to 377px, doesn't affect parent height */}
+        {/* Photo — clipped to 377px, no orange tint (same as desktop) */}
         <div className="absolute inset-x-0 top-0 overflow-hidden" style={{ height: 377 }}>
           <img
             alt=""
             src={heroImage}
             className="absolute w-full h-full pointer-events-none object-cover object-center"
           />
-          <div className="absolute inset-0" style={{ background: 'rgba(242,186,48,0.39)' }} />
         </div>
         {/* Gradient — fades photo into page bg */}
         <div className="absolute left-0 right-0" style={{
