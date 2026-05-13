@@ -37,9 +37,13 @@ export function HeroSection({ event }: { event: LandingEvent }) {
       <div className="relative w-full md:hidden" style={{ background: '#0f071a' }}>
         {/* Photo — clipped to 377px, no orange tint (same as desktop) */}
         <div className="absolute inset-x-0 top-0 overflow-hidden" style={{ height: 377 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             src={heroImage}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
             className="absolute w-full h-full pointer-events-none object-cover object-center"
           />
         </div>
@@ -79,9 +83,13 @@ export function HeroSection({ event }: { event: LandingEvent }) {
       <div className="relative w-full hidden md:block" style={{ height: 690, background: '#0f071a' }}>
         {/* Hero photo — full bleed, clipped to 690px */}
         <div className="absolute inset-0 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             src={heroImage}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
             className="absolute w-full h-full pointer-events-none object-cover object-center"
           />
         </div>

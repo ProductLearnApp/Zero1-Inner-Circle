@@ -33,9 +33,6 @@ export async function middleware(req: NextRequest) {
     pathname !== '/api/admin/media'
 
   if ((isAdminPage || (isAdminApi && !isPublicMediaServe)) && !(await isAuthenticated(req))) {
-    // #region agent log
-    fetch('http://127.0.0.1:7554/ingest/866bc12d-c90a-4588-a31e-44da4cab020d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'5fbd79'},body:JSON.stringify({sessionId:'5fbd79',location:'middleware.ts:28',message:'post-fix: auth blocked (non-media)',data:{pathname,method:req.method,hasCookie:!!req.cookies.get('admin_session')},hypothesisId:'H-A',runId:'post-fix',timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
     if (isAdminApi) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -43,12 +40,6 @@ export async function middleware(req: NextRequest) {
     loginUrl.pathname = ADMIN_LOGIN_PATH
     return NextResponse.redirect(loginUrl)
   }
-
-  // #region agent log
-  if (isPublicMediaServe) {
-    fetch('http://127.0.0.1:7554/ingest/866bc12d-c90a-4588-a31e-44da4cab020d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'5fbd79'},body:JSON.stringify({sessionId:'5fbd79',location:'middleware.ts:40',message:'post-fix: public media serve — no auth required',data:{pathname,method:req.method,hasCookie:!!req.cookies.get('admin_session')},hypothesisId:'H-A',runId:'post-fix',timestamp:Date.now()})}).catch(()=>{});
-  }
-  // #endregion
 
   return NextResponse.next()
 }
