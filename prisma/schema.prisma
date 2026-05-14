@@ -46,6 +46,14 @@ model EventSettings {
   mapsUrl                    String?
   mapImageUrl                String?
   passPointsToRemember       Json?
+  heroSubtitle               String?
+  eventAbout                 String?
+  eventCardImageUrl          String?
+  eventCardSubtitle          String?
+  donationText               String?
+  donationImage1Url          String?
+  donationImage2Url          String?
+  donationImage3Url          String?
 }
 
 model Attendee {

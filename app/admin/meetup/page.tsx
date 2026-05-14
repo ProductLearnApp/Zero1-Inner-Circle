@@ -8,6 +8,7 @@ type TimelineItem = { time: string; title: string; imageUrl: string }
 type MeetupForm = {
   eventId: string
   heroImageUrl: string
+  heroSubtitle: string
   date: string
   time: string
   city: string
@@ -17,9 +18,16 @@ type MeetupForm = {
   missionFormUrl: string
   sessionDescription: string
   aboutText: string
+  eventAbout: string
+  eventCardImageUrl: string
+  eventCardSubtitle: string
   instagramUrl: string
   emailAddress: string
   partnerLogoUrl: string
+  donationText: string
+  donationImage1Url: string
+  donationImage2Url: string
+  donationImage3Url: string
   activities: ActivityItem[]
   timeline: TimelineItem[]
   thingsToKnow: string
@@ -53,6 +61,7 @@ const DEFAULT_THINGS_TO_KNOW = [
 const DEFAULT_FORM: MeetupForm = {
   eventId: '',
   heroImageUrl: '',
+  heroSubtitle: 'An offline community to solve REAL personal finance problems',
   date: '',
   time: '',
   city: '',
@@ -61,10 +70,17 @@ const DEFAULT_FORM: MeetupForm = {
   maxCapacity: 30,
   missionFormUrl: '',
   sessionDescription: 'In this session, we will figure out what a well-diversified portfolio looks like and figure out the money mistakes most of us make along the way',
-  aboutText: 'Every quarter, the Zero1 Community hosts Inner Circle meetups to solve REAL personal finance problems. These are events crafted by the community, for the community. Unlike regular lectures, Inner Circle Meetups focus on hands-on learning, where every activity is specially designed to build technical skills.',
+  aboutText: 'Quarterly meet-ups across up to 8 cities\nTopic-based events for focused learning\nCurated hands-on activities to build technical skills\nAll earnings after covering event costs are donated to charity',
+  eventAbout: 'Starting your investing journey can feel intimidating, especially when there\'s no perfect rubric to follow. In this meet-up we will try to answer a few questions:',
+  eventCardImageUrl: '',
+  eventCardSubtitle: 'Curating the right mix of investments',
   instagramUrl: '',
   emailAddress: '',
   partnerLogoUrl: '',
+  donationText: 'All earnings after covering event costs are donated to charity. Every ticket you buy contributes directly to causes supported by the Zero1 community.',
+  donationImage1Url: '',
+  donationImage2Url: '',
+  donationImage3Url: '',
   activities: DEFAULT_ACTIVITIES,
   timeline: DEFAULT_TIMELINE,
   thingsToKnow: DEFAULT_THINGS_TO_KNOW,
@@ -91,6 +107,7 @@ export default function MeetupPage() {
           setForm({
             eventId:        event.id,
             heroImageUrl:   event.heroImageUrl  ?? '',
+            heroSubtitle:   s?.heroSubtitle     ?? DEFAULT_FORM.heroSubtitle,
             date:           event.date          ?? '',
             time:           event.time          ?? '',
             city:           event.city          ?? '',
@@ -100,9 +117,16 @@ export default function MeetupPage() {
             missionFormUrl:     s?.missionFormUrl      ?? '',
             sessionDescription: s?.sessionDescription  ?? DEFAULT_FORM.sessionDescription,
             aboutText:          s?.aboutText           ?? DEFAULT_FORM.aboutText,
+            eventAbout:         s?.eventAbout          ?? DEFAULT_FORM.eventAbout,
+            eventCardImageUrl:  s?.eventCardImageUrl   ?? '',
+            eventCardSubtitle:  s?.eventCardSubtitle   ?? DEFAULT_FORM.eventCardSubtitle,
             instagramUrl:   s?.instagramUrl     ?? '',
             emailAddress:   s?.emailAddress     ?? '',
             partnerLogoUrl: s?.partnerLogoUrl   ?? '',
+            donationText:       s?.donationText        ?? DEFAULT_FORM.donationText,
+            donationImage1Url:  s?.donationImage1Url   ?? '',
+            donationImage2Url:  s?.donationImage2Url   ?? '',
+            donationImage3Url:  s?.donationImage3Url   ?? '',
             activities:     Array.isArray(s?.activities) ? s.activities as ActivityItem[] : DEFAULT_ACTIVITIES,
             timeline:       Array.isArray(s?.timeline)   ? s.timeline   as TimelineItem[] : DEFAULT_TIMELINE,
             thingsToKnow:   Array.isArray(s?.thingsToKnow)
@@ -131,9 +155,17 @@ export default function MeetupPage() {
       missionFormUrl:     form.missionFormUrl     || undefined,
       sessionDescription: form.sessionDescription || undefined,
       aboutText:          form.aboutText          || undefined,
-      instagramUrl:   form.instagramUrl   || undefined,
-      emailAddress:   form.emailAddress   || undefined,
-      partnerLogoUrl: form.partnerLogoUrl || undefined,
+      heroSubtitle:       form.heroSubtitle       || undefined,
+      eventAbout:         form.eventAbout         || undefined,
+      eventCardImageUrl:  form.eventCardImageUrl  || undefined,
+      eventCardSubtitle:  form.eventCardSubtitle  || undefined,
+      instagramUrl:       form.instagramUrl       || undefined,
+      emailAddress:       form.emailAddress       || undefined,
+      partnerLogoUrl:     form.partnerLogoUrl     || undefined,
+      donationText:       form.donationText       || undefined,
+      donationImage1Url:  form.donationImage1Url  || undefined,
+      donationImage2Url:  form.donationImage2Url  || undefined,
+      donationImage3Url:  form.donationImage3Url  || undefined,
       activities:     form.activities,
       timeline:       form.timeline,
       thingsToKnow:   form.thingsToKnow
@@ -236,18 +268,48 @@ export default function MeetupPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
 
-        {/* Content */}
-        <Section title="Content">
+        {/* Hero */}
+        <Section title="Hero">
           <Field label="Hero Image URL" hint={<>Full-width background photo at the top. <Dim>1440 × 678 px</Dim> recommended.</>}>
             <Input value={form.heroImageUrl} onChange={v => setSetting('heroImageUrl', v)}
               placeholder="https://…/crowd-photo.jpg" />
           </Field>
-          <Field label="About / Description">
+          <Field label="Hero Subtitle" hint='Line shown beneath the wordmark, e.g. "An offline community to solve REAL personal finance problems"'>
+            <Input value={form.heroSubtitle} onChange={v => setSetting('heroSubtitle', v)}
+              placeholder="An offline community to solve REAL personal finance problems" />
+          </Field>
+          <Field label="Hero Bullet Points" hint="One bullet per line — shown as ◆ list below the subtitle in the hero section">
             <textarea
               value={form.aboutText}
               onChange={e => setSetting('aboutText', e.target.value)}
               rows={5}
-              placeholder="Every quarter, the Zero1 Community hosts Inner Circle meetups…"
+              placeholder="Quarterly meet-ups across up to 8 cities&#10;Topic-based events for focused learning…"
+              className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:ring-1 transition resize-y"
+              style={{ background: 'var(--bg)', border: '1px solid var(--border)', ['--tw-ring-color' as string]: 'var(--accent)' }}
+            />
+          </Field>
+        </Section>
+
+        {/* Upcoming Events Card */}
+        <Section title="Upcoming Events Card">
+          <Field label="Card Image URL" hint={<>Background image for the event card. <Dim>820 × 457 px</Dim> recommended.</>}>
+            <Input value={form.eventCardImageUrl} onChange={v => setSetting('eventCardImageUrl', v)}
+              placeholder="/api/admin/media/…" />
+          </Field>
+          <Field label="Card Subtitle" hint='Short line below the event name, e.g. "Curating the right mix of investments"'>
+            <Input value={form.eventCardSubtitle} onChange={v => setSetting('eventCardSubtitle', v)}
+              placeholder="Curating the right mix of investments" />
+          </Field>
+        </Section>
+
+        {/* About the Event */}
+        <Section title="About the Event">
+          <Field label="Intro paragraph" hint="Shown in the collapsed view, before the 'Show more' button">
+            <textarea
+              value={form.eventAbout}
+              onChange={e => setSetting('eventAbout', e.target.value)}
+              rows={3}
+              placeholder="Starting your investing journey can feel intimidating…"
               className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:ring-1 transition resize-y"
               style={{ background: 'var(--bg)', border: '1px solid var(--border)', ['--tw-ring-color' as string]: 'var(--accent)' }}
             />
@@ -256,19 +318,37 @@ export default function MeetupPage() {
             <Input value={form.missionFormUrl} onChange={v => setSetting('missionFormUrl', v)}
               placeholder="https://forms.gle/…" />
           </Field>
-          <Field label="Session Description" hint='Short subtitle shown below "How to build the right portfolio?" in the Money Mixology section'>
+        </Section>
+
+        {/* Donation */}
+        <Section title="Donation">
+          <Field label="Donation text" hint="Body copy in the Donation section">
             <textarea
-              value={form.sessionDescription}
-              onChange={e => setSetting('sessionDescription', e.target.value)}
-              rows={2}
-              placeholder="In this session, we will figure out what a well-diversified portfolio looks like…"
+              value={form.donationText}
+              onChange={e => setSetting('donationText', e.target.value)}
+              rows={3}
+              placeholder="All earnings after covering event costs are donated to charity…"
               className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:ring-1 transition resize-y"
               style={{ background: 'var(--bg)', border: '1px solid var(--border)', ['--tw-ring-color' as string]: 'var(--accent)' }}
             />
           </Field>
-          <Field label="Partner Logo URL" hint={<>Logo in the &quot;In partnership with&quot; section. <Dim>~360 × 144 px</Dim> PNG with transparent background recommended.</>}>
+          <Field label="Donation photo — large (left)" hint={<><Dim>466 × 358 px</Dim></>}>
+            <Input value={form.donationImage1Url} onChange={v => setSetting('donationImage1Url', v)}
+              placeholder="/api/admin/media/…" />
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Donation photo — top right" hint={<><Dim>338 × 169 px</Dim></>}>
+              <Input value={form.donationImage2Url} onChange={v => setSetting('donationImage2Url', v)}
+                placeholder="/api/admin/media/…" />
+            </Field>
+            <Field label="Donation photo — bottom right" hint={<><Dim>338 × 169 px</Dim></>}>
+              <Input value={form.donationImage3Url} onChange={v => setSetting('donationImage3Url', v)}
+                placeholder="/api/admin/media/…" />
+            </Field>
+          </div>
+          <Field label="Partner Logo URL" hint={<>Logo shown in &quot;In partnership with&quot;. <Dim>~360 × 144 px</Dim> PNG with transparent bg.</>}>
             <Input value={form.partnerLogoUrl} onChange={v => setSetting('partnerLogoUrl', v)}
-              placeholder="https://…/partner.png" />
+              placeholder="/api/admin/media/…" />
           </Field>
         </Section>
 

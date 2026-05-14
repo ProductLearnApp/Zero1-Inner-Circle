@@ -23,6 +23,14 @@ export type EventSettings = {
   timeline: TimelineItem[] | null
   thingsToKnow: string[] | null
   sessionDescription: string | null
+  heroSubtitle: string | null
+  eventAbout: string | null
+  eventCardImageUrl: string | null
+  eventCardSubtitle: string | null
+  donationText: string | null
+  donationImage1Url: string | null
+  donationImage2Url: string | null
+  donationImage3Url: string | null
 }
 
 export type LandingEvent = {

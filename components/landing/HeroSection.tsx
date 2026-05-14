@@ -21,15 +21,20 @@ const BOLT_MOBILE    = 'https://www.figma.com/api/mcp/asset/4c488797-49be-4926-9
 const WORDMARK_MOBILE  = 'https://www.figma.com/api/mcp/asset/f05b23b1-bd08-488d-97a5-028d17e4f8a0' // Group8
 const WORDMARK_DESKTOP = 'https://www.figma.com/api/mcp/asset/59f6740d-7f96-4a31-bb60-87f92ec2834e'
 
-const DEFAULT_ABOUT = [
-  'Every quarter, the Zero1 Community hosts Inner Circle meetups to solve REAL personal finance problems. These are events crafted by the community, for the community.',
-  'Unlike regular lectures, Inner Circle Meet ups focus on hands on learning, where every activity is specially designed to build technical skills. Imagine if you could engage with a Zero1 video in person – participate in the experiments, play out the scenarios, that\'s what these events feel likeInner Circle meet ups are exclusive paid events. And, all the earnings from the tickets are donated to charity',
+const DEFAULT_SUBTITLE = 'An offline community to solve REAL personal finance problems'
+
+const DEFAULT_BULLETS = [
+  'Quarterly meet-ups across up to 8 cities',
+  'Topic-based events for focused learning',
+  'Curated hands-on activities to build technical skills',
+  'All earnings after covering event costs are donated to charity',
 ]
 
 export function HeroSection({ event }: { event: LandingEvent }) {
   const heroImage = sanitizeUrl(event.heroImageUrl) || ASSET_HERO_IMG1
+  const subtitle = event.settings?.heroSubtitle ?? DEFAULT_SUBTITLE
   const rawText = event.settings?.aboutText
-  const paragraphs = rawText ? rawText.split('\n').filter(Boolean) : DEFAULT_ABOUT
+  const bullets = rawText ? rawText.split('\n').filter(Boolean) : DEFAULT_BULLETS
 
   return (
     <>
@@ -66,16 +71,19 @@ export function HeroSection({ event }: { event: LandingEvent }) {
             <div className="flex flex-col items-center w-full" style={{ gap: 8 }}>
               <img alt="The Inner Circle" src={WORDMARK_MOBILE} style={{ height: 23.98, width: 176.27, display: 'block' }} />
               <p className="text-center w-full" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontStyle: 'italic', fontSize: 14, lineHeight: '20px', color: '#fff' }}>
-                Honest money conversations, so you can stop chasing
+                {subtitle}
               </p>
             </div>
           </div>
-          {/* About paragraphs — same overlay, gap-18 below header */}
-          <div className="flex flex-col w-full" style={{ gap: 0 }}>
-            {paragraphs.map((p, i) => (
-              <p key={i} className="text-center" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb' }}>{p}</p>
+          {/* Bullet list */}
+          <ul className="w-full" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {bullets.map((b, i) => (
+              <li key={i} className="flex items-start" style={{ gap: 8 }}>
+                <span style={{ color: '#f2ba30', fontSize: 10, marginTop: 5, flexShrink: 0 }}>◆</span>
+                <span style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb' }}>{b}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
 
@@ -115,15 +123,18 @@ export function HeroSection({ event }: { event: LandingEvent }) {
             <div className="flex flex-col items-center w-full" style={{ gap: 12 }}>
               <img alt="The Inner Circle" src={WORDMARK_DESKTOP} style={{ height: 78.5, width: 577, display: 'block' }} />
               <p className="text-center w-full" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 500, fontStyle: 'italic', fontSize: 28, lineHeight: 'normal', color: '#fff' }}>
-                Honest money conversations, so you can stop chasing
+                {subtitle}
               </p>
             </div>
-            {/* About paragraphs */}
-            <div className="text-center w-full" style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 18, lineHeight: '24px', color: '#b7b5bb' }}>
-              {paragraphs.map((p, i) => (
-                <p key={i} style={{ marginBottom: i < paragraphs.length - 1 ? 24 : 0 }}>{p}</p>
+            {/* Bullet list */}
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+              {bullets.map((b, i) => (
+                <li key={i} className="flex items-center justify-center" style={{ gap: 10 }}>
+                  <span style={{ color: '#f2ba30', fontSize: 10, flexShrink: 0 }}>◆</span>
+                  <span style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 18, lineHeight: '24px', color: '#b7b5bb' }}>{b}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </div>

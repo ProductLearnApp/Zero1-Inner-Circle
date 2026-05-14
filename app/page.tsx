@@ -40,6 +40,14 @@ async function getEvent(): Promise<LandingEvent | null> {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             timeline: Array.isArray(s.timeline) ? (s.timeline as any[]) : null,
             thingsToKnow: Array.isArray(s.thingsToKnow) ? (s.thingsToKnow as string[]) : null,
+            heroSubtitle: s.heroSubtitle ?? null,
+            eventAbout: s.eventAbout ?? null,
+            eventCardImageUrl: s.eventCardImageUrl ?? null,
+            eventCardSubtitle: s.eventCardSubtitle ?? null,
+            donationText: s.donationText ?? null,
+            donationImage1Url: s.donationImage1Url ?? null,
+            donationImage2Url: s.donationImage2Url ?? null,
+            donationImage3Url: s.donationImage3Url ?? null,
           }
         : null,
     }
