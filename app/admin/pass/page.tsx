@@ -14,6 +14,10 @@ const DEFAULT_POINTS = [
 
 type PassForm = {
   eventId: string
+  date: string
+  time: string
+  city: string
+  venue: string
   mapsUrl: string
   mapImageUrl: string
   logoUrl: string
@@ -25,6 +29,10 @@ type PassForm = {
 
 const DEFAULT_FORM: PassForm = {
   eventId: '',
+  date: '',
+  time: '',
+  city: '',
+  venue: '',
   mapsUrl: '',
   mapImageUrl: '',
   logoUrl: '',
@@ -52,6 +60,10 @@ export default function AdminPassPage() {
           const s = event.settings
           setForm({
             eventId:          event.id,
+            date:             event.date          ?? '',
+            time:             event.time          ?? '',
+            city:             event.city          ?? '',
+            venue:            event.venue         ?? '',
             mapsUrl:          s?.mapsUrl          ?? '',
             mapImageUrl:      s?.mapImageUrl      ?? '',
             logoUrl:          s?.logoUrl          ?? '',
@@ -101,7 +113,14 @@ export default function AdminPassPage() {
       const res = await fetch('/api/admin/event', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: form.eventId, settings: settingsPayload }),
+        body: JSON.stringify({
+          id:    form.eventId,
+          date:  form.date  || undefined,
+          time:  form.time  || undefined,
+          city:  form.city  || undefined,
+          venue: form.venue || undefined,
+          settings: settingsPayload,
+        }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
@@ -133,6 +152,33 @@ export default function AdminPassPage() {
       </p>
 
       <form onSubmit={handleSave} className="space-y-6">
+
+        {/* Event Details */}
+        <Section title="Event Details">
+          <p className="text-xs -mt-2 mb-2" style={{ color: 'var(--muted)' }}>
+            Shown as the date, time, and location on the pass. These are the exact details shared with attendees.
+          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Date" hint='e.g. "24th May, 2026, Sunday"'>
+              <Input value={form.date} onChange={v => set('date', v)}
+                placeholder="24th May, 2026, Sunday" />
+            </Field>
+            <Field label="Time" hint='e.g. "11 AM – 4 PM"'>
+              <Input value={form.time} onChange={v => set('time', v)}
+                placeholder="11 AM – 4 PM" />
+            </Field>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="City">
+              <Input value={form.city} onChange={v => set('city', v)}
+                placeholder="Noida" />
+            </Field>
+            <Field label="Venue" hint="Exact venue name shown on the pass">
+              <Input value={form.venue} onChange={v => set('venue', v)}
+                placeholder="Roastery Coffee House, Sector 116" />
+            </Field>
+          </div>
+        </Section>
 
         {/* Venue Map */}
         <Section title="Venue Map">
