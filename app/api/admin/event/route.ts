@@ -112,6 +112,9 @@ export async function PATCH(req: NextRequest) {
         activities?: Prisma.InputJsonValue
         timeline?: Prisma.InputJsonValue
         thingsToKnow?: Prisma.InputJsonValue
+        mapsUrl?: string
+        mapImageUrl?: string
+        passPointsToRemember?: Prisma.InputJsonValue
       }
     }
 

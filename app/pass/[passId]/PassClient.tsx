@@ -1,14 +1,26 @@
 'use client'
 
-import { useState } from 'react'
-import QRCodeDisplay from '@/components/pass/QRCodeDisplay'
-import PlusOneForm from '@/components/pass/PlusOneForm'
+import Image from 'next/image'
+import { PASS_ASSETS } from '@/lib/passAssets'
+import { usePassFlow } from '@/hooks/usePassFlow'
+import { TicketCard } from '@/components/pass/TicketCard/TicketCard'
+import { EventMetaRow } from '@/components/pass/EventMetaRow/EventMetaRow'
+import { MapsPreview } from '@/components/pass/MapsPreview/MapsPreview'
+import { PromptBlock } from '@/components/pass/PromptBlock/PromptBlock'
+import { PlusOneFormV2 } from '@/components/pass/PlusOneFormV2/PlusOneFormV2'
+import { ConfirmedBlock } from '@/components/pass/ConfirmedBlock/ConfirmedBlock'
+import { PointsToRemember } from '@/components/pass/PointsToRemember/PointsToRemember'
+import type { QRConfig } from '@/types/pass'
+import styles from './page.module.css'
 
 type EventSettings = {
   accentColor: string
   allowPlusOne: boolean
   logoUrl: string | null
   passBackgroundUrl: string | null
+  mapsUrl: string | null
+  mapImageUrl: string | null
+  passPointsToRemember: string[] | null
 }
 
 type Event = {
@@ -38,21 +50,23 @@ type Attendee = {
 }
 
 export default function PassClient({ attendee }: { attendee: Attendee }) {
-  const [current, setCurrent] = useState(attendee)
-  const event = current.event
+  const event = attendee.event
   const settings = event.settings
-  const accent = settings?.accentColor ?? '#F2BA30'
-  const isSelected = current.status === 'SELECTED' || current.status === 'CHECKED_IN'
+  const isSelected = attendee.status === 'SELECTED' || attendee.status === 'CHECKED_IN'
+
+  const { state, plusOneData, isSubmitting, submitError, goToForm, submitForm } = usePassFlow(
+    attendee.id,
+    attendee.plusOneName,
+    attendee.plusOneQrPayload
+  )
 
   if (!isSelected) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: '#0A0A0F' }}>
-        <div className="max-w-sm text-center p-8 rounded-2xl"
-          style={{ background: '#161616', border: '1px solid #2a2a2a' }}>
-          <div className="text-4xl mb-4">⏳</div>
-          <h1 className="text-xl font-bold text-white mb-2">Application Under Review</h1>
-          <p className="text-sm" style={{ color: '#888' }}>
+      <main className={styles.page} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+        <div style={{ maxWidth: 320, textAlign: 'center', padding: 32, borderRadius: 16, background: 'var(--color-surface)' }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>⏳</div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'white', marginBottom: 8 }}>Application Under Review</h1>
+          <p style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>
             You&apos;re on the waitlist for {event.name}. We&apos;ll notify you via WhatsApp once you&apos;re selected.
           </p>
         </div>
@@ -60,170 +74,97 @@ export default function PassClient({ attendee }: { attendee: Attendee }) {
     )
   }
 
-  const hasPlusOne = !!current.plusOneName
+  const primaryQR: QRConfig = {
+    value: attendee.qrPayload ?? attendee.id,
+    fgColor: '#000000',
+    bgColor: '#ffffff',
+    level: 'M',
+    logoUrl: settings?.logoUrl ?? undefined,
+  }
+
+  const resolvedPlusOnePayload = state === 'confirmed' && plusOneData
+    ? plusOneData.plusOnePassValue
+    : null
+
+  type Pass = { qrConfig: QRConfig; label: string }
+  const passes: [Pass, Pass?] = resolvedPlusOnePayload
+    ? [
+        { qrConfig: primaryQR, label: 'Your pass' },
+        {
+          qrConfig: {
+            value: resolvedPlusOnePayload,
+            fgColor: '#000000',
+            bgColor: '#ffffff',
+            level: 'M',
+            logoUrl: settings?.logoUrl ?? undefined,
+          },
+          label: `${plusOneData!.plusOneName}'s pass`,
+        },
+      ]
+    : [{ qrConfig: primaryQR, label: 'Your pass' }]
+
+  const heroImageUrl = event.heroImageUrl ?? PASS_ASSETS.heroBg
+  const location = [event.city, event.venue].filter(Boolean).join(', ')
+  const showPlusOneFlow = settings?.allowPlusOne && state !== 'confirmed'
+  const mapsHref = settings?.mapsUrl
+    ?? (location ? `https://maps.google.com/?q=${encodeURIComponent(location)}` : undefined)
 
   return (
-    <main className="min-h-screen py-8 px-4" style={{ background: '#0A0A0F' }}>
-      <div className="max-w-sm mx-auto space-y-4">
-
-        {/* Hero banner */}
-        {event.heroImageUrl && (
-          <div className="rounded-2xl overflow-hidden h-36 relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={event.heroImageUrl} alt={event.name}
-              className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-            <p className="absolute bottom-3 left-4 text-white font-bold text-lg">{event.name}</p>
-          </div>
-        )}
-
-        {/* Primary ticket */}
-        <TicketCard
-          label="Your Pass"
-          name={current.name}
-          seatLabel={current.seatLabel}
-          qrPayload={current.qrPayload}
-          date={event.date}
-          accent={accent}
-          logoUrl={settings?.logoUrl}
-          bgUrl={settings?.passBackgroundUrl}
-          status={current.status}
-        />
-
-        {/* +1 ticket (if registered) */}
-        {hasPlusOne && current.plusOneQrPayload && (
-          <TicketCard
-            label="+1 Guest Pass"
-            name={current.plusOneName!}
-            seatLabel={current.seatLabel}
-            qrPayload={current.plusOneQrPayload}
-            date={event.date}
-            accent={accent}
-            logoUrl={settings?.logoUrl}
-            bgUrl={settings?.passBackgroundUrl}
-            status="SELECTED"
+    <main className={styles.page}>
+      <section className={styles.hero} aria-label="Event hero">
+        <div className={styles.heroBg}>
+          <Image
+            src={heroImageUrl}
+            alt={event.name}
+            fill
+            className={styles.heroBgImg}
+            priority
+            unoptimized
           />
-        )}
+          <div className={styles.heroBgTint} aria-hidden="true" />
+        </div>
+        <div className={styles.heroGradient} aria-hidden="true" />
+      </section>
 
-        {/* Event details */}
-        <div className="rounded-2xl p-5 space-y-2"
-          style={{ background: '#161616', border: '1px solid #2a2a2a' }}>
-          <Detail icon="📅" text={`${event.date} · ${event.time}`} />
-          <Detail icon="📍" text={`${event.city} · ${event.venue}`} />
+      <div className={styles.ticketWrapper}>
+        <TicketCard
+          passes={passes}
+          showPager={state === 'confirmed' && passes.length === 2}
+          confirmed={state === 'confirmed'}
+        />
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.metaSection}>
+          <EventMetaRow date={event.date} time={event.time} location={location} />
+          <MapsPreview
+            mapImageUrl={settings?.mapImageUrl ?? undefined}
+            href={mapsHref}
+          />
         </div>
 
-        {/* +1 invite section */}
-        {settings?.allowPlusOne && !hasPlusOne && (
-          <PlusOneForm attendeeId={current.id} accent={accent}
-            onSuccess={updated => setCurrent(prev => ({ ...prev, ...updated }))} />
-        )}
-
-        {hasPlusOne && (
-          <div className="rounded-2xl p-4 text-center"
-            style={{ background: '#0f2a10', border: '1px solid #2a5a20' }}>
-            <p className="text-sm text-green-400 font-medium">
-              ✓ You are attending with {current.plusOneName}
-            </p>
-          </div>
-        )}
-
-        {/* Notes */}
-        <div className="rounded-2xl p-5"
-          style={{ background: '#161616', border: '1px solid #2a2a2a' }}>
-          <p className="text-xs font-semibold mb-3" style={{ color: '#888' }}>POINTS TO REMEMBER</p>
-          <ol className="space-y-2 text-sm" style={{ color: '#ccc' }}>
-            <li>1. One pass = 2 people maximum</li>
-            <li>2. Valid govt. ID may be required</li>
-            <li>3. Pass will be verified at entrance</li>
-          </ol>
+        <div className={styles.stateBlock}>
+          {showPlusOneFlow && state === 'initial' && (
+            <PromptBlock onGenerate={goToForm} />
+          )}
+          {showPlusOneFlow && state === 'form' && (
+            <PlusOneFormV2
+              onSubmit={submitForm}
+              isLoading={isSubmitting}
+              error={submitError}
+            />
+          )}
+          {state === 'confirmed' && plusOneData && (
+            <ConfirmedBlock plusOneName={plusOneData.plusOneName} />
+          )}
         </div>
+
+        <PointsToRemember points={settings?.passPointsToRemember ?? undefined} />
+      </div>
+
+      <div className={styles.homeIndicator} aria-hidden="true">
+        <div className={styles.homeBar} />
       </div>
     </main>
-  )
-}
-
-function TicketCard({
-  label, name, seatLabel, qrPayload, date, accent, logoUrl, bgUrl, status,
-}: {
-  label: string
-  name: string
-  seatLabel: string | null
-  qrPayload: string | null
-  date: string
-  accent: string
-  logoUrl: string | null | undefined
-  bgUrl: string | null | undefined
-  status: string
-}) {
-  const checkedIn = status === 'CHECKED_IN'
-
-  return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{
-        background: bgUrl ? `url(${bgUrl}) center/cover` : '#161616',
-        border: '1px solid #2a2a2a',
-      }}>
-      <div style={{ background: bgUrl ? 'rgba(22,22,22,0.88)' : undefined }}>
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          {logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt="logo" className="h-8 object-contain" />
-          ) : (
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md flex items-center justify-center text-black text-xs font-bold"
-                style={{ background: accent }}>Z</div>
-              <span className="text-white text-sm font-semibold">Zero1</span>
-            </div>
-          )}
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-            style={{ background: checkedIn ? '#0f1f2a' : '#1a2a10', color: checkedIn ? '#30b0cf' : '#6fcf30' }}>
-            {checkedIn ? 'Checked In' : 'Confirmed'}
-          </span>
-        </div>
-
-        {/* QR */}
-        <div className="flex flex-col items-center py-4 px-5">
-          <p className="text-xs mb-3" style={{ color: '#888' }}>{label}</p>
-          {qrPayload ? (
-            <QRCodeDisplay payload={qrPayload} size={320} />
-          ) : (
-            <div className="w-[220px] h-[220px] rounded-xl bg-white/5 flex items-center justify-center">
-              <p className="text-xs" style={{ color: '#555' }}>QR unavailable</p>
-            </div>
-          )}
-        </div>
-
-        {/* Perforated divider */}
-        <div className="flex items-center px-3 my-1">
-          <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ background: '#0A0A0F', marginLeft: '-8px' }} />
-          <div className="flex-1 border-t border-dashed mx-1" style={{ borderColor: '#333' }} />
-          <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ background: '#0A0A0F', marginRight: '-8px' }} />
-        </div>
-
-        {/* Attendee info */}
-        <div className="flex items-center justify-between px-5 py-4">
-          <div>
-            <p className="font-bold text-white text-base">{name}</p>
-            <p className="text-xs mt-0.5" style={{ color: '#888' }}>{date}</p>
-          </div>
-          {seatLabel && (
-            <div className="text-right">
-              <p className="text-xs" style={{ color: '#888' }}>Seat</p>
-              <p className="font-mono font-bold text-base" style={{ color: accent }}>{seatLabel}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function Detail({ icon, text }: { icon: string; text: string }) {
-  return (
-    <div className="flex items-start gap-3 text-sm" style={{ color: '#ccc' }}>
-      <span>{icon}</span>
-      <span>{text}</span>
-    </div>
   )
 }

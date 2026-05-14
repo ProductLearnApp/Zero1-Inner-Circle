@@ -1,0 +1,106 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.emojiWrap {
+  width: 36px;
+  height: 30px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.emojiInner {
+  position: absolute;
+  width: 38.073px;
+  height: 31.621px;
+  left: calc(50% + 1.47px - 19.04px);
+  top: calc(50% + 1.04px - 15.81px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emojiRotate {
+  transform: rotate(-12.38deg);
+  flex: none;
+}
+
+.emojiFrame {
+  width: 33.487px;
+  height: 25.023px;
+  position: relative;
+}
+
+.emojiImg {
+  position: absolute;
+  width: 119.4%;
+  height: 159.79%;
+  left: -10.05%;
+  top: -28.76%;
+  object-fit: cover;
+  display: block;
+  max-width: none;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+  width: 228px;
+  align-self: center;
+}
+
+@media (min-width: 1024px) {
+  .block {
+    padding: 59px 300px;
+    gap: 48px;
+    height: 291px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .heading {
+    gap: 12px;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    width: 100%;
+  }
+}

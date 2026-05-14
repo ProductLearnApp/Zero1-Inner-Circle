@@ -43,6 +43,9 @@ model EventSettings {
   timeline                   Json?
   thingsToKnow               Json?
   sessionDescription         String?
+  mapsUrl                    String?
+  mapImageUrl                String?
+  passPointsToRemember       Json?
 }
 
 model Attendee {

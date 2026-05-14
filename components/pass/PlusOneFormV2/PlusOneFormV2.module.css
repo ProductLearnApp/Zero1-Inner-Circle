@@ -1,0 +1,114 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  width: 100%;
+  overflow: hidden;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.emojiWrap {
+  width: 36px;
+  height: 30px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.emojiInner {
+  position: absolute;
+  width: 38.073px;
+  height: 31.621px;
+  left: calc(50% + 1.47px - 19.04px);
+  top: calc(50% + 1.04px - 15.81px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emojiRotate {
+  transform: rotate(-12.38deg);
+  flex: none;
+}
+
+.emojiFrame {
+  width: 33.487px;
+  height: 25.023px;
+  position: relative;
+}
+
+.emojiImg {
+  position: absolute;
+  width: 119.4%;
+  height: 159.79%;
+  left: -10.05%;
+  top: -28.76%;
+  object-fit: cover;
+  display: block;
+  max-width: none;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.error {
+  font-size: 13px;
+  color: #ff6b6b;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .block {
+    padding: 60px 50px;
+    gap: 0;
+    height: 439px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .heading {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .form {
+    width: 497px;
+    gap: 32px;
+  }
+
+  .fields {
+    gap: 12px;
+  }
+}

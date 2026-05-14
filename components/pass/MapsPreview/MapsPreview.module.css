@@ -1,0 +1,74 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 185px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: block;
+}
+
+/* When rendered as an <a> */
+.containerLink {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.containerLink:hover .bg {
+  transform: scale(1.03);
+  transition: transform 0.25s ease;
+}
+
+.bgWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.bg {
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.chip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 23px;
+  padding: 0 8px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.chipDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chipText {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    height: 185px;
+  }
+
+  .chip {
+    top: 16px;
+    left: 16px;
+  }
+
+  .chipText {
+    font-size: 13px;
+  }
+}

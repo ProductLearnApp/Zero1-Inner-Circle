@@ -1,0 +1,224 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  position: relative;
+  width: 249px;
+  height: 303px;
+  overflow: hidden;
+  filter: drop-shadow(4px 0 3px rgba(0, 0, 0, 0.12));
+}
+
+.cardConfirmed {
+  height: 315px;
+}
+
+.ticketBg {
+  position: absolute;
+  left: 0;
+  top: -4px;
+  width: 249px;
+  height: 343px;
+  pointer-events: none;
+}
+
+.ticketBgConfirmed {
+  top: 0;
+}
+
+.ticketBgMobile {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+.ticketBgDesktop {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.branding {
+  position: absolute;
+  left: 43px;
+  top: 28px;
+  width: 163px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.logoWrap {
+  position: relative;
+  width: 64.8px;
+  height: 13.3px;
+  flex-shrink: 0;
+}
+
+.logoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.presents {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  color: #000;
+  white-space: nowrap;
+}
+
+.eventTitleWrap {
+  position: relative;
+  width: 163px;
+  height: 22.2px;
+  flex-shrink: 0;
+}
+
+.eventTitleImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.qrArea {
+  position: absolute;
+  left: 46px;
+  top: 92px;
+}
+
+.qrBlock {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 160px;
+  height: 160px;
+}
+
+.qrBlock svg {
+  display: block;
+  width: 160px !important;
+  height: 160px !important;
+}
+
+/* QR-only carousel — branding stays static above */
+.qrCarousel {
+  position: absolute;
+  left: 46px;
+  top: 92px;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.qrCarousel::-webkit-scrollbar {
+  display: none;
+}
+
+.qrSlide {
+  flex: 0 0 160px;
+  width: 160px;
+  height: 160px;
+  scroll-snap-align: start;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.downloadBtn {
+  position: absolute;
+  top: 6px;
+  left: 129px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border: 1.6px solid var(--color-download-border, #f5bd34);
+  border-radius: 3.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4.8px;
+  z-index: 3;
+}
+
+.downloadBtn:hover {
+  background: #fffbf0;
+}
+
+.downloadIcon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
+}
+
+.pager {
+  position: absolute;
+  top: 259px; /* mobile: confirmed card h=315px, proportional to desktop 411/499×315 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.pagerDots {
+  display: flex;
+  gap: 9px;
+}
+
+.dot {
+  display: inline-block;
+  width: 12.5px;
+  height: 12.5px;
+  border-radius: 50%;
+  background-color: var(--color-input-border);
+}
+
+.dotActive {
+  background-color: var(--color-accent);
+}
+
+.pagerLabel {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #1f2937;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  /* Desktop intentionally keeps mobile dimensions for visual consistency */
+  .ticketBgDesktop {
+    display: none;
+  }
+}
