@@ -37,7 +37,12 @@ export default async function PassPage({ params }: Props) {
           city:         attendee.event.city,
           venue:        attendee.event.venue,
           heroImageUrl: attendee.event.heroImageUrl,
-          settings:     attendee.event.settings,
+          settings: attendee.event.settings ? {
+            ...attendee.event.settings,
+            passPointsToRemember: Array.isArray(attendee.event.settings.passPointsToRemember)
+              ? attendee.event.settings.passPointsToRemember as string[]
+              : null,
+          } : null,
         },
       }}
     />
