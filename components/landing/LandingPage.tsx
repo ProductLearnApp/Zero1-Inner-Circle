@@ -13,15 +13,24 @@ import { LandingFooter } from './LandingFooter'
 import { MissionBar } from './MissionBar'
 
 /*
- * Page layout — new design (Figma node 6079:4962).
+ * Desktop layout — centered, 1440px canvas.
  *
- * Collapsed state (default):
- *   Hero → Upcoming Events card → About intro → "Show more" button
+ * Section widths from Figma 6055:4051:
+ *   Nav: 1044px (sticky, 26px from top)
+ *   Hero: full bleed
+ *   Upcoming Events card: 820px
+ *   About: 820px
+ *   Skills: 820px
+ *   Flow of the Event (timeline): 760px
+ *   Selection Process: 841px
+ *   Things to Know: 841px
+ *   Donation: 841px
+ *   Footer: full width
  *
- * Expanded state (after "Show more" click):
- *   + Skills → Flow of the Event → Selection Process → Things to Know → Donation
- *
- * Footer always visible.
+ * Vertical spacing (from Figma y-positions):
+ *   Hero → Upcoming Events: paddingTop 80px on Upcoming
+ *   Upcoming Events → About: paddingTop 80px on About
+ *   Each expanded section: paddingTop 100px
  */
 export function LandingPage({ event }: { event: LandingEvent }) {
   return (
@@ -34,59 +43,72 @@ export function LandingPage({ event }: { event: LandingEvent }) {
       <HeroSection event={event} />
 
       {/* ══════════════════ MOBILE LAYOUT ══════════════════ */}
-      <div className="mx-auto w-full md:hidden" style={{ maxWidth: 430 }}>
+      <div className="md:hidden w-full" style={{ maxWidth: 430, margin: '0 auto' }}>
 
         {/* Upcoming event card */}
         <UpcomingEvents event={event} />
 
-        {/* About intro + Show more toggle */}
-        <div className="px-4" style={{ paddingTop: 40 }}>
+        {/* About intro */}
+        <div className="px-4" style={{ paddingTop: 48 }}>
           <AboutSection event={event} />
-          <ShowMoreWrapper>
+        </div>
+
+        {/* Show more toggle + expanded content */}
+        <ShowMoreWrapper>
+          <div className="flex flex-col">
             <ActivitiesGrid event={event} />
             <TimelineSection event={event} />
-            <SelectionCriteria event={event} />
-            <ThingsToKnow event={event} />
+            <div className="px-4">
+              <SelectionCriteria event={event} />
+            </div>
+            <div style={{ height: 60 }} />
+            <div className="px-4">
+              <ThingsToKnow event={event} />
+            </div>
             <DonationSection event={event} />
-          </ShowMoreWrapper>
-        </div>
+          </div>
+        </ShowMoreWrapper>
 
       </div>
 
       {/* ══════════════════ DESKTOP LAYOUT ══════════════════ */}
-      <div className="hidden md:flex flex-col items-center">
+      <div className="hidden md:flex flex-col items-center w-full">
 
-        {/* Upcoming event card */}
+        {/* Upcoming Events — 820px card */}
         <UpcomingEvents event={event} />
 
-        {/* About intro — centred, 841px wide */}
-        <div className="flex flex-col items-center" style={{ paddingTop: 80, width: 841 }}>
+        {/* About the event — 820px wide, centered */}
+        <div style={{ width: 820, paddingTop: 80 }}>
           <AboutSection event={event} />
-          <ShowMoreWrapper>
-            <div className="flex flex-col items-center w-full">
-
-              {/* Skills you'll learn */}
-              <div className="flex flex-col items-center" style={{ marginTop: 80, width: 1000 }}>
-                <ActivitiesGrid event={event} />
-              </div>
-
-              {/* Flow of the Event */}
-              <div className="flex flex-col items-center" style={{ marginTop: 120 }}>
-                <TimelineSection event={event} />
-              </div>
-
-              {/* Selection Process + Things to Know */}
-              <div className="flex flex-col items-center" style={{ marginTop: 120, gap: 120 }}>
-                <SelectionCriteria event={event} />
-                <ThingsToKnow event={event} />
-              </div>
-
-              {/* Donation */}
-              <DonationSection event={event} />
-
-            </div>
-          </ShowMoreWrapper>
         </div>
+
+        {/* Show more / Show less + expanded sections */}
+        <ShowMoreWrapper>
+          <div className="flex flex-col items-center w-full">
+
+            {/* Skills you'll learn — up to 820px */}
+            <div style={{ width: '100%', paddingTop: 80 }}>
+              <ActivitiesGrid event={event} />
+            </div>
+
+            {/* Flow of the Event — 760px */}
+            <TimelineSection event={event} />
+
+            {/* Selection Process — 841px */}
+            <div className="flex flex-col items-center" style={{ paddingTop: 100, width: 841 }}>
+              <SelectionCriteria event={event} />
+            </div>
+
+            {/* Things to Know — 841px */}
+            <div className="flex flex-col items-center" style={{ paddingTop: 100, width: 841 }}>
+              <ThingsToKnow event={event} />
+            </div>
+
+            {/* Donation */}
+            <DonationSection event={event} />
+
+          </div>
+        </ShowMoreWrapper>
 
         <div style={{ height: 80 }} />
       </div>
@@ -94,7 +116,7 @@ export function LandingPage({ event }: { event: LandingEvent }) {
       {/* Footer — always visible */}
       <LandingFooter event={event} />
 
-      {/* Mobile sticky CTA */}
+      {/* Mobile sticky CTA bar */}
       <MissionBar event={event} />
       <div className="md:hidden" style={{ height: 104 }} />
     </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 type ActivityItem = { title: string; description: string; icon: string }
-type TimelineItem = { time: string; title: string; imageUrl: string }
+type TimelineItem = { time: string; title: string; description: string; imageUrl: string }
 
 type MeetupForm = {
   eventId: string
@@ -42,11 +42,11 @@ const DEFAULT_ACTIVITIES: ActivityItem[] = [
 ]
 
 const DEFAULT_TIMELINE: TimelineItem[] = [
-  { time: '11 AM – 11:30 AM',    title: 'Money Charades',                             imageUrl: '' },
-  { time: '11:30 AM – 12:30 PM', title: 'The Curious Case of a Dead Portfolio',       imageUrl: '' },
-  { time: '12:45 PM – 1:00 PM',  title: 'Networking and Experience Zones',            imageUrl: '' },
-  { time: '1:00 PM – 2:00 PM',   title: 'Balance(d) Sheet',                           imageUrl: '' },
-  { time: '2:00 PM – 3:00 PM',   title: 'Lunch',                                      imageUrl: '' },
+  { time: '11 AM – 11:30 AM',    title: 'Money Charades',                             description: 'The classic icebreaker, but with a money twist to it',                                                                       imageUrl: '' },
+  { time: '11:30 AM – 12:30 PM', title: 'The Curious Case of a Dead Portfolio',       description: 'A case file, witness statements and evidence, we have it all. Now, it is on you to solve this money mystery',               imageUrl: '' },
+  { time: '12:45 PM – 1:00 PM',  title: 'Networking and Experience Zones',            description: 'Some time for you to get to know your Inner Circle buddies better',                                                          imageUrl: '' },
+  { time: '1:00 PM – 2:00 PM',   title: 'Balance(d) Sheet',                           description: "5 personalities, many money decisions - Who's doing money right? You decide",                                              imageUrl: '' },
+  { time: '2:00 PM – 3:00 PM',   title: 'Lunch',                                      description: 'With an exclusive Zero1 Inner Circle menu to choose from',                                                                  imageUrl: '' },
 ]
 
 const DEFAULT_THINGS_TO_KNOW = [
@@ -490,7 +490,13 @@ export default function MeetupPage() {
                   }} placeholder="Money Charades" />
                 </Field>
               </div>
-              <Field label="Card Image URL" hint={<><Dim>241 × 334 px</Dim> — portrait photo, fills a 217 × 232 card.</>}>
+              <Field label="Description">
+                <Input value={item.description ?? ''} onChange={v => {
+                  const next = [...form.timeline]; next[i] = { ...next[i], description: v }
+                  setSetting('timeline', next)
+                }} placeholder="What happens in this session…" />
+              </Field>
+              <Field label="Card Image URL" hint={<><Dim>290 × 243 px</Dim> — landscape photo for the card background.</>}>
                 <Input value={item.imageUrl} onChange={v => {
                   const next = [...form.timeline]; next[i] = { ...next[i], imageUrl: v }
                   setSetting('timeline', next)
@@ -501,7 +507,7 @@ export default function MeetupPage() {
           <button type="button"
             className="text-xs px-3 py-1.5 rounded-lg font-medium"
             style={{ background: 'rgba(242,186,48,0.1)', color: 'var(--accent)', border: '1px solid rgba(242,186,48,0.25)' }}
-            onClick={() => setSetting('timeline', [...form.timeline, { time: '', title: '', imageUrl: '' }])}>
+            onClick={() => setSetting('timeline', [...form.timeline, { time: '', title: '', description: '', imageUrl: '' }])}>
             + Add slot
           </button>
         </Section>

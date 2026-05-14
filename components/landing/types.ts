@@ -7,6 +7,7 @@ export type ActivityItem = {
 export type TimelineItem = {
   time: string
   title: string
+  description?: string
   imageUrl: string
 }
 
