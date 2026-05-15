@@ -116,26 +116,26 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
               background: 'linear-gradient(to top, rgba(15,7,26,0.85) 0%, rgba(15,7,26,0.4) 60%, transparent 100%)',
             }} />
 
-            {/* Info bar — 112px from bottom, width 856px centred */}
-            <div className="absolute flex items-center justify-between" style={{
+            {/* Info bar — anchored to bottom, full card width split equally */}
+            <div className="absolute flex items-center" style={{
               bottom: 24, left: '50%', transform: 'translateX(-50%)', width: 856,
             }}>
-              {/* Passes + price */}
-              <div className="flex items-center" style={{ gap: 0 }}>
+              {/* Passes + price — left half */}
+              <div className="flex items-center" style={{ flex: 1, minWidth: 0 }}>
                 <IconBox src={ASSET_CARD_ICON_PASSES} size={74} />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 344 }}>
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontSize: 16, lineHeight: '24px', color: '#fff', margin: 0 }}>
                     Only <strong>{event.maxCapacity}</strong> passes
                   </p>
-                  <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontSize: 16, color: '#fff', margin: 0 }}>
-                    {event.price ?? '₹3,000'} + GST (you &amp; your +1)
+                  <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontSize: 16, lineHeight: '24px', color: '#fff', margin: 0 }}>
+                    {event.price ?? '₹3,000'} + GST (includes you &amp; a +1)
                   </p>
                 </div>
               </div>
-              {/* Date + city */}
-              <div className="flex items-center" style={{ gap: 0, width: 297 }}>
+              {/* Date + city — right half */}
+              <div className="flex items-center" style={{ flex: 1, minWidth: 0 }}>
                 <IconBox src={ASSET_CARD_ICON_DATE} size={74} />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 240 }}>
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontSize: 16, lineHeight: '24px', color: '#fff', margin: 0 }}>
                     {event.date}{event.time ? `, [${event.time}]` : ''}
                   </p>

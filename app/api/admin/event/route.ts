@@ -119,6 +119,7 @@ export async function PATCH(req: NextRequest) {
         mapImageUrl?: string
         passPointsToRemember?: Prisma.InputJsonValue
         heroSubtitle?: string
+        sessionDescription?: string
         eventAbout?: string
         eventCardImageUrl?: string
         eventCardSubtitle?: string

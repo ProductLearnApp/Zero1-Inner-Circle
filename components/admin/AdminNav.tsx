@@ -8,8 +8,7 @@ const links = [
   { href: '/admin/attendees', label: 'Attendees' },
   { href: '/admin/checkin',   label: 'Check-in'  },
   { href: '/admin/pass',      label: 'Pass'      },
-  { href: '/admin/settings',  label: 'Settings'  },
-  { href: '/admin/meetup',    label: 'Meetup'    },
+  { href: '/admin/meetup-settings', label: 'Meetup Settings' },
   { href: '/admin/media',     label: 'Media'     },
 ]
 
