@@ -56,6 +56,7 @@ model EventSettings {
   donationImage1Url          String?
   donationImage2Url          String?
   donationImage3Url          String?
+  selectionProcess           Json?
 }
 
 model Attendee {

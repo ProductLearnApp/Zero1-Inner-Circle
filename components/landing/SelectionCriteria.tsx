@@ -1,14 +1,14 @@
 import { SectionTitle } from './SectionTitle'
-import type { LandingEvent } from './types'
+import type { LandingEvent, SelectionProcessItem } from './types'
 import { ASSET_STEP_MISSION, ASSET_STEP_REVIEW, ASSET_STEP_PAYMENT, ASSET_STEP_RSVP } from './assets'
 
 /*
  * Figma node 6070:4935 — "Selection Process" section.
  * 4 steps with dynamic-color icons (target, thumb-up, dollar, chat).
- * Full-width CTA button at bottom.
+ * Full-width CTA button at bottom. Steps are configurable via admin.
  */
 
-const STEPS = [
+const DEFAULT_STEPS: SelectionProcessItem[] = [
   {
     icon: ASSET_STEP_MISSION,
     iconSize: 38,
@@ -37,6 +37,9 @@ const STEPS = [
 
 export function SelectionCriteria({ event }: { event: LandingEvent }) {
   const missionUrl = event.settings?.missionFormUrl || '#'
+  const steps = event.settings?.selectionProcess?.length
+    ? event.settings.selectionProcess
+    : DEFAULT_STEPS
 
   return (
     <>
@@ -44,20 +47,20 @@ export function SelectionCriteria({ event }: { event: LandingEvent }) {
       <div className="flex flex-col px-4 md:hidden" style={{ gap: 24 }}>
         <SectionTitle>Selection Process</SectionTitle>
         <div className="flex flex-col" style={{ gap: 0 }}>
-          {STEPS.map((step, i) => (
+          {steps.map((step, i) => (
             <div key={i} className="flex items-start" style={{ gap: 16 }}>
               {/* Icon + vertical connector */}
               <div className="shrink-0 flex flex-col items-center" style={{ width: 40 }}>
                 <div className="flex items-center justify-center" style={{ width: 40, height: 40 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={step.icon} style={{ width: step.iconSize * 0.85, height: step.iconSize * 0.85 }} />
+                  <img alt="" src={step.icon} style={{ width: (step.iconSize ?? 32) * 0.85, height: (step.iconSize ?? 32) * 0.85 }} />
                 </div>
-                {i < STEPS.length - 1 && (
+                {i < steps.length - 1 && (
                   <div style={{ width: 1, flex: 1, minHeight: 24, background: 'linear-gradient(to bottom, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%)' }} />
                 )}
               </div>
               {/* Text */}
-              <div style={{ flex: 1, paddingBottom: i < STEPS.length - 1 ? 24 : 0 }}>
+              <div style={{ flex: 1, paddingBottom: i < steps.length - 1 ? 24 : 0 }}>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 700, fontSize: 14, lineHeight: '20px', color: '#fff', marginBottom: 4 }}>{step.title}</p>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#807d85' }}>{step.body}</p>
               </div>
@@ -75,7 +78,7 @@ export function SelectionCriteria({ event }: { event: LandingEvent }) {
       <div className="hidden md:flex flex-col" style={{ gap: 40, width: 841 }}>
         <SectionTitle>Selection Process</SectionTitle>
         <div className="flex flex-col" style={{ gap: 0 }}>
-          {STEPS.map((step, i) => (
+          {steps.map((step, i) => (
             <div key={i} className="flex items-start" style={{ gap: 20 }}>
               {/* Icon + vertical connector */}
               <div className="shrink-0 flex flex-col items-center" style={{ width: 48 }}>
@@ -84,12 +87,12 @@ export function SelectionCriteria({ event }: { event: LandingEvent }) {
                   <img alt="" src={step.icon} style={{ width: step.iconSize, height: step.iconSize }} />
                 </div>
                 {/* Vertical connector line — hidden after last step */}
-                {i < STEPS.length - 1 && (
+                {i < steps.length - 1 && (
                   <div style={{ width: 1, flex: 1, minHeight: 32, background: 'linear-gradient(to bottom, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%)' }} />
                 )}
               </div>
               {/* Text */}
-              <div style={{ flex: 1, paddingBottom: i < STEPS.length - 1 ? 32 : 0 }}>
+              <div style={{ flex: 1, paddingBottom: i < steps.length - 1 ? 32 : 0 }}>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 700, fontSize: 18, lineHeight: '24px', color: '#fff', marginBottom: 6 }}>{step.title}</p>
                 <p style={{ fontFamily: 'Satoshi,sans-serif', fontWeight: 400, fontSize: 16, lineHeight: '24px', color: '#807d85' }}>{step.body}</p>
               </div>

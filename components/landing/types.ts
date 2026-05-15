@@ -11,6 +11,18 @@ export type TimelineItem = {
   imageUrl: string
 }
 
+export type ThingsToKnowItem = {
+  text: string
+  iconUrl?: string
+}
+
+export type SelectionProcessItem = {
+  icon: string
+  iconSize?: number
+  title: string
+  body: string
+}
+
 export type EventSettings = {
   accentColor: string
   allowPlusOne: boolean
@@ -24,7 +36,8 @@ export type EventSettings = {
   navLogoUrl: string | null
   activities: ActivityItem[] | null
   timeline: TimelineItem[] | null
-  thingsToKnow: string[] | null
+  thingsToKnow: ThingsToKnowItem[] | null
+  selectionProcess: SelectionProcessItem[] | null
   sessionDescription: string | null
   heroSubtitle: string | null
   eventAbout: string | null

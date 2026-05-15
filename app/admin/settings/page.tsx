@@ -24,6 +24,8 @@ type EventForm = {
     whatsappTemplateSelected: string
     whatsappTemplateReminder: string
     whatsappTemplatePlusOne: string
+    thingsToKnow: string
+    selectionProcess: string
   }
 }
 
@@ -48,6 +50,8 @@ const DEFAULTS: EventForm = {
     whatsappTemplateSelected: '',
     whatsappTemplateReminder: '',
     whatsappTemplatePlusOne: '',
+    thingsToKnow: '',
+    selectionProcess: '',
   },
 }
 
@@ -92,6 +96,8 @@ export default function SettingsPage() {
               whatsappTemplateSelected: s?.whatsappTemplateSelected ?? '',
               whatsappTemplateReminder: s?.whatsappTemplateReminder ?? '',
               whatsappTemplatePlusOne:  s?.whatsappTemplatePlusOne  ?? '',
+              thingsToKnow:    Array.isArray(s?.thingsToKnow)    ? JSON.stringify(s.thingsToKnow, null, 2)    : '',
+              selectionProcess: Array.isArray(s?.selectionProcess) ? JSON.stringify(s.selectionProcess, null, 2) : '',
             },
           })
         }
@@ -116,6 +122,15 @@ export default function SettingsPage() {
     setSaved(false)
     setError(null)
 
+    let parsedThingsToKnow: unknown = undefined
+    let parsedSelectionProcess: unknown = undefined
+    try {
+      if (form.settings.thingsToKnow.trim()) parsedThingsToKnow = JSON.parse(form.settings.thingsToKnow)
+    } catch { setError('Things to Know: invalid JSON'); setSaving(false); return }
+    try {
+      if (form.settings.selectionProcess.trim()) parsedSelectionProcess = JSON.parse(form.settings.selectionProcess)
+    } catch { setError('Selection Process: invalid JSON'); setSaving(false); return }
+
     const payload = {
       name:         form.name,
       date:         form.date,
@@ -136,6 +151,8 @@ export default function SettingsPage() {
         whatsappTemplateSelected: form.settings.whatsappTemplateSelected || undefined,
         whatsappTemplateReminder: form.settings.whatsappTemplateReminder || undefined,
         whatsappTemplatePlusOne:  form.settings.whatsappTemplatePlusOne  || undefined,
+        thingsToKnow:    parsedThingsToKnow    ?? undefined,
+        selectionProcess: parsedSelectionProcess ?? undefined,
       },
     }
 
@@ -299,6 +316,30 @@ export default function SettingsPage() {
           </label>
         </Section>
 
+        {/* Things to Know */}
+        <Section title="Things to Know">
+          <Field label="Items (JSON array)" hint={`Each item: { "text": "...", "iconUrl": "https://..." } — iconUrl is optional, cycles through pen icons if omitted`}>
+            <Textarea
+              value={form.settings.thingsToKnow}
+              onChange={v => setSetting('thingsToKnow', v)}
+              placeholder={`[\n  { "text": "Only 15 tickets available" },\n  { "text": "Non-transferable", "iconUrl": "https://..." }\n]`}
+              rows={6}
+            />
+          </Field>
+        </Section>
+
+        {/* Selection Process */}
+        <Section title="Selection Process">
+          <Field label="Steps (JSON array)" hint={`Each step: { "icon": "https://...", "iconSize": 38, "title": "...", "body": "..." }`}>
+            <Textarea
+              value={form.settings.selectionProcess}
+              onChange={v => setSetting('selectionProcess', v)}
+              placeholder={`[\n  { "icon": "https://...", "iconSize": 38, "title": "Mission Submission", "body": "..." }\n]`}
+              rows={8}
+            />
+          </Field>
+        </Section>
+
         {/* WhatsApp — only show for existing events; not critical for first setup */}
         {!noEvent && (
           <Section title="WhatsApp Templates (Gupshup IDs)">
@@ -378,6 +419,27 @@ function Input({
       placeholder={placeholder}
       required={required}
       className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:ring-1 transition"
+      style={{
+        background: 'var(--bg)',
+        border: '1px solid var(--border)',
+        '--tw-ring-color': 'var(--accent)',
+      } as React.CSSProperties} />
+  )
+}
+
+function Textarea({
+  value, onChange, placeholder, rows = 4,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  rows?: number
+}) {
+  return (
+    <textarea value={value} onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      rows={rows}
+      className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:ring-1 transition resize-y font-mono"
       style={{
         background: 'var(--bg)',
         border: '1px solid var(--border)',

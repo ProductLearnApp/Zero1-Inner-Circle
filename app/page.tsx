@@ -41,7 +41,10 @@ async function getEvent(): Promise<LandingEvent | null> {
             activities: Array.isArray(s.activities) ? (s.activities as any[]) : null,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             timeline: Array.isArray(s.timeline) ? (s.timeline as any[]) : null,
-            thingsToKnow: Array.isArray(s.thingsToKnow) ? (s.thingsToKnow as string[]) : null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            thingsToKnow: Array.isArray(s.thingsToKnow) ? (s.thingsToKnow as any[]) : null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            selectionProcess: Array.isArray(s.selectionProcess) ? (s.selectionProcess as any[]) : null,
             heroSubtitle: s.heroSubtitle ?? null,
             eventAbout: s.eventAbout ?? null,
             eventCardImageUrl: s.eventCardImageUrl ?? null,

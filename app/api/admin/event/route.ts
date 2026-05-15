@@ -109,10 +109,12 @@ export async function PATCH(req: NextRequest) {
         emailAddress?: string
         aboutText?: string
         partnerLogoUrl?: string
+        partnerName?: string
         navLogoUrl?: string
         activities?: Prisma.InputJsonValue
         timeline?: Prisma.InputJsonValue
         thingsToKnow?: Prisma.InputJsonValue
+        selectionProcess?: Prisma.InputJsonValue
         mapsUrl?: string
         mapImageUrl?: string
         passPointsToRemember?: Prisma.InputJsonValue
