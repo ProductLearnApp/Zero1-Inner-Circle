@@ -135,6 +135,7 @@ export async function PATCH(req: NextRequest) {
         const newEvent = await prisma.event.create({
           data: {
             ...eventFields,
+            name: eventFields.name ?? '',
             maxCapacity: eventFields.maxCapacity ?? 30,
             settings: {
               create: {
