@@ -111,10 +111,10 @@ export function HeroSection({ event }: { event: LandingEvent }) {
 
         {/* Text group: "Zero1 presents" + wordmark + subtitle + about text, y=346, w=708 */}
         <div className="absolute flex flex-col items-center" style={{ top: 346, left: '50%', transform: 'translateX(-50%)', gap: 24, width: 708 }}>
-          {/* "Zero1 presents" row */}
-          <div className="flex items-center justify-center" style={{ gap: 4 }}>
+          {/* "Zero1 presents" row — align tops, not centered */}
+          <div className="flex items-start justify-center" style={{ gap: 4 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36 }} />
+            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36, marginTop: 3 }} />
             <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 35.5, lineHeight: 1 }}>
               presents
             </p>
