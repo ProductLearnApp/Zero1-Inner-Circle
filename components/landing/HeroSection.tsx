@@ -64,7 +64,7 @@ export function HeroSection({ event }: { event: LandingEvent }) {
           <div className="flex flex-col items-center w-full" style={{ gap: 12 }}>
             <div className="flex items-center justify-center" style={{ gap: 2 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 72, height: 22 }} />
+            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36 }} />
               <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 16, lineHeight: 1 }}>
                 presents
               </p>
