@@ -51,8 +51,9 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager" fetchPriority="high"
           />
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to bottom, rgba(15,7,26,0) 0%, rgba(15,7,26,0.5) 45%, #0f071a 100%)',
+          <div className="absolute inset-x-0 bottom-0" style={{
+            height: '40%',
+            background: 'linear-gradient(to top, rgba(15,7,26,0.85) 0%, rgba(15,7,26,0.4) 60%, transparent 100%)',
           }} />
 
           {/* Bottom info bar */}
@@ -98,25 +99,26 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
 
       {/* ── Desktop ── */}
       <div className="hidden md:flex flex-col items-center" style={{ paddingTop: 80 }}>
-        <div style={{ width: 820 }}>
+        <div style={{ width: 900 }}>
           <SectionTitle>Upcoming events</SectionTitle>
 
-          {/* Card: 820×457 */}
-          <div className="relative overflow-hidden rounded-3xl" style={{ marginTop: 24, width: 820, height: 457 }}>
+          {/* Card: 900×506 (16:9) */}
+          <div className="relative overflow-hidden rounded-3xl" style={{ marginTop: 24, width: 900, height: 506 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt="" src={cardImage}
               className="absolute inset-0 w-full h-full object-cover"
               loading="eager" fetchPriority="high"
             />
-            {/* Figma gradient: 1.17deg, dark at bottom fading to transparent at top */}
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(1.17deg, rgb(15,7,26) 11.92%, rgba(15,7,26,0.705) 48.79%, rgba(15,7,26,0) 99.48%)',
+            {/* Subtle bottom gradient — only covers info bar area */}
+            <div className="absolute inset-x-0 bottom-0" style={{
+              height: 160,
+              background: 'linear-gradient(to top, rgba(15,7,26,0.85) 0%, rgba(15,7,26,0.4) 60%, transparent 100%)',
             }} />
 
-            {/* Info bar — at top: 353px, width 776px centred */}
+            {/* Info bar — 112px from bottom, width 856px centred */}
             <div className="absolute flex items-center justify-between" style={{
-              top: 353, left: '50%', transform: 'translateX(-50%)', width: 776,
+              bottom: 24, left: '50%', transform: 'translateX(-50%)', width: 856,
             }}>
               {/* Date + city */}
               <div className="flex items-center" style={{ gap: 0 }}>

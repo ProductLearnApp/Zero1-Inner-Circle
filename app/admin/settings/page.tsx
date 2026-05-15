@@ -27,6 +27,7 @@ type EventForm = {
     whatsappTemplateSelected: string
     whatsappTemplateReminder: string
     whatsappTemplatePlusOne: string
+    eventCardImageUrl: string
     thingsToKnow: ThingsToKnowRow[]
     selectionProcess: SelectionStepRow[]
   }
@@ -56,6 +57,7 @@ const DEFAULTS: EventForm = {
     whatsappTemplateSelected: '',
     whatsappTemplateReminder: '',
     whatsappTemplatePlusOne: '',
+    eventCardImageUrl: '',
     thingsToKnow: [BLANK_KNOW_ROW],
     selectionProcess: [BLANK_STEP_ROW],
   },
@@ -102,6 +104,7 @@ export default function SettingsPage() {
               whatsappTemplateSelected: s?.whatsappTemplateSelected ?? '',
               whatsappTemplateReminder: s?.whatsappTemplateReminder ?? '',
               whatsappTemplatePlusOne:  s?.whatsappTemplatePlusOne  ?? '',
+              eventCardImageUrl: s?.eventCardImageUrl ?? '',
               thingsToKnow: Array.isArray(s?.thingsToKnow) && s.thingsToKnow.length
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ? (s.thingsToKnow as any[]).map((r: any) => typeof r === 'string' ? { text: r, iconUrl: '' } : { text: r.text ?? '', iconUrl: r.iconUrl ?? '' })
@@ -164,6 +167,7 @@ export default function SettingsPage() {
         whatsappTemplateSelected: form.settings.whatsappTemplateSelected || undefined,
         whatsappTemplateReminder: form.settings.whatsappTemplateReminder || undefined,
         whatsappTemplatePlusOne:  form.settings.whatsappTemplatePlusOne  || undefined,
+        eventCardImageUrl: form.settings.eventCardImageUrl || undefined,
         thingsToKnow:    parsedThingsToKnow    ?? undefined,
         selectionProcess: parsedSelectionProcess ?? undefined,
       },
@@ -269,6 +273,10 @@ export default function SettingsPage() {
           <Field label="Hero Image URL">
             <Input value={form.heroImageUrl} onChange={v => set('heroImageUrl', v)}
               placeholder="https://…/hero.jpg" />
+          </Field>
+          <Field label="Event Card Image URL" hint="Displayed in the Upcoming Events card. Recommended: 1920×1080 px (16:9 wide format)">
+            <Input value={form.settings.eventCardImageUrl} onChange={v => setSetting('eventCardImageUrl', v)}
+              placeholder="https://…/event-card.jpg" />
           </Field>
           <Field label="Nav Logo URL" hint="Overrides the Zero1 logo shown in the landing page navigation">
             <Input value={form.settings.navLogoUrl} onChange={v => setSetting('navLogoUrl', v)}
