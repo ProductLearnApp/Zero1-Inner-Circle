@@ -36,16 +36,22 @@ const V_LINE      = 'https://www.figma.com/api/mcp/asset/060b905f-c5cd-49e8-a8ef
 
 
 /* ─── Desktop layout constants (matches Figma 6055:4051) ─────────────── */
-const D_CARD_W  = 290   // card width
-const D_CONT_W  = 760   // total section container width
-const D_RIGHT_X = 470   // D_CONT_W - D_CARD_W — left edge of right column
-const D_DOT_X   = 368   // left edge of center dot (center 380 - dot_size/2 12.5)
-const D_DOT_SZ  = 25    // dot diameter
+const D_CARD_W   = 290   // card width
+const D_CONT_W   = 760   // total section container width
+const D_RIGHT_X  = 470   // D_CONT_W - D_CARD_W — left edge of right column
+const D_DOT_X    = 368   // left edge of center dot (center 380 - dot_size/2 12.5)
+const D_DOT_SZ   = 25    // dot diameter
 const D_H_CONN_W = D_DOT_X - D_CARD_W  // 78px — connector from card edge to dot
-const D_BASE_L  = 0     // left column first card top
-const D_BASE_R  = 123   // right column first card top (offset below left)
-const D_STEP_L  = 406   // vertical step between left-column cards
-const D_STEP_R  = 406   // vertical step between right-column cards
+const D_BASE_L   = 0     // left column first card top
+const D_BASE_R   = 123   // right column first card top (offset below left)
+const GAP        = 43    // consistent gap between cards in same column
+
+// Fixed height parts: 24 (top pad) + 243 (img) + 8 (gap) + 24 (title lh) + 4 (gap) + 24 (bottom pad)
+// + description lines × 18px; ~35 chars per line at 13px Inter in 242px inner width
+function estimateCardHeight(description = '') {
+  const lines = Math.max(1, Math.ceil(description.length / 35))
+  return 327 + lines * 18
+}
 
 /* ─── Dot component ─────────────────────────────────────────────────── */
 function Dot() {
@@ -71,72 +77,84 @@ function TimelineCard({
   description?: string
   mobile?: boolean
 }) {
-  const imgSrc = sanitizeUrl(item.imageUrl) || defaultBg
-  const radius = mobile ? 24 : 36
-  const imgH   = mobile ? 160 : 243
-  const pad    = mobile ? '14px 18px 18px' : '16px 24px 24px'
-  const titleFs = mobile ? 16 : 18
-  const bodyFs  = mobile ? 12 : 13
+  const imgSrc   = sanitizeUrl(item.imageUrl) || defaultBg
+  const cardPad  = mobile ? 18 : 24
+  const imgH     = mobile ? 160 : 243
+  const imgR     = mobile ? 16 : 20
+  const titleFs  = mobile ? 16 : 18
+  const bodyFs   = mobile ? 12 : 13
 
   return (
     <div style={{
       background: '#1c1a1f',
-      borderRadius: radius,
-      overflow: 'hidden',
+      borderRadius: mobile ? 24 : 36,
+      padding: cardPad,
       width: mobile ? '100%' : D_CARD_W,
       flexShrink: 0,
+      boxSizing: 'border-box',
     }}>
-      {/* Image + time badge */}
-      <div style={{ position: 'relative', height: imgH, flexShrink: 0 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          alt=""
-          src={imgSrc}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-        />
-        {/* Time badge */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Image with rounded corners */}
         <div style={{
-          position: 'absolute',
-          top: mobile ? 10 : 12,
-          left: mobile ? 10 : 12,
-          background: 'rgba(28,26,31,0.4)',
-          borderRadius: 31,
-          padding: mobile ? '3px 10px' : '4px 12px',
+          position: 'relative',
+          height: imgH,
+          borderRadius: imgR,
+          overflow: 'hidden',
+          flexShrink: 0,
         }}>
-          <span style={{
-            fontFamily: 'Inter,sans-serif',
-            fontWeight: 700,
-            fontSize: mobile ? 11 : 12,
-            lineHeight: '16px',
-            color: '#fff',
-            whiteSpace: 'nowrap',
-          }}>
-            {item.time}
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            src={imgSrc}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          {/* Time badge */}
+          {item.time && (
+            <div style={{
+              position: 'absolute',
+              top: mobile ? 10 : 10,
+              left: mobile ? 10 : 10,
+              background: 'rgba(28,26,31,0.4)',
+              borderRadius: 31,
+              padding: mobile ? '3px 10px' : '4px 12px',
+            }}>
+              <span style={{
+                fontFamily: 'Inter,sans-serif',
+                fontWeight: 700,
+                fontSize: mobile ? 11 : 12,
+                lineHeight: '16px',
+                color: '#fff',
+                whiteSpace: 'nowrap',
+              }}>
+                {item.time}
+              </span>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Title + body */}
-      <div style={{ padding: pad }}>
-        <p style={{
-          fontFamily: 'Inter,sans-serif',
-          fontWeight: 700,
-          fontSize: titleFs,
-          lineHeight: '22px',
-          color: '#fff',
-          marginBottom: mobile ? 4 : 6,
-        }}>
-          {item.title}
-        </p>
-        <p style={{
-          fontFamily: 'Inter,sans-serif',
-          fontWeight: 500,
-          fontSize: bodyFs,
-          lineHeight: '18px',
-          color: '#c5c4c8',
-        }}>
-          {item.description ?? description}
-        </p>
+        {/* Title + body */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <p style={{
+            fontFamily: 'Inter,sans-serif',
+            fontWeight: 600,
+            fontSize: titleFs,
+            lineHeight: '24px',
+            color: '#fff',
+            margin: 0,
+          }}>
+            {item.title}
+          </p>
+          <p style={{
+            fontFamily: 'Inter,sans-serif',
+            fontWeight: 500,
+            fontSize: bodyFs,
+            lineHeight: '18px',
+            color: '#c5c4c8',
+            margin: 0,
+          }}>
+            {item.description ?? description}
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -151,15 +169,25 @@ export function TimelineSection({ event }: { event: LandingEvent }) {
   const leftItems  = items.filter((_, i) => i % 2 === 0)  // 0,2,4
   const rightItems = items.filter((_, i) => i % 2 === 1)  // 1,3
 
-  /* Compute absolute top positions for each card */
-  const leftTops  = leftItems.map((_,  i) => D_BASE_L + i * D_STEP_L)
-  const rightTops = rightItems.map((_, i) => D_BASE_R + i * D_STEP_R)
+  /* Compute absolute top positions dynamically so gap stays consistent */
+  const leftTops: number[] = leftItems.reduce<number[]>((acc, item, i) => {
+    if (i === 0) return [D_BASE_L]
+    const prev = acc[i - 1]
+    return [...acc, prev + estimateCardHeight(leftItems[i - 1].description) + GAP]
+  }, [])
 
-  /* Approximate card height for block height calc */
-  const CARD_H = 243 + 16 + 22 + 6 + 36 + 24  // ~347px
+  const rightTops: number[] = rightItems.reduce<number[]>((acc, item, i) => {
+    if (i === 0) return [D_BASE_R]
+    const prev = acc[i - 1]
+    return [...acc, prev + estimateCardHeight(rightItems[i - 1].description) + GAP]
+  }, [])
 
-  const lastL = leftTops.length  ? leftTops[leftTops.length - 1]   + CARD_H : 0
-  const lastR = rightTops.length ? rightTops[rightTops.length - 1] + CARD_H : 0
+  const lastL = leftTops.length
+    ? leftTops[leftTops.length - 1] + estimateCardHeight(leftItems[leftItems.length - 1]?.description)
+    : 0
+  const lastR = rightTops.length
+    ? rightTops[rightTops.length - 1] + estimateCardHeight(rightItems[rightItems.length - 1]?.description)
+    : 0
   const D_BLOCK_H = Math.max(lastL, lastR) + 20
 
   /* Vertical line: spans from first dot to last dot */
