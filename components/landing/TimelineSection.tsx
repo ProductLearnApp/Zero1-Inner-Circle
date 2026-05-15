@@ -68,7 +68,7 @@ function TimelineCard({
 }: {
   item: TimelineItem
   defaultBg: string
-  description: string
+  description?: string
   mobile?: boolean
 }) {
   const imgSrc = sanitizeUrl(item.imageUrl) || defaultBg

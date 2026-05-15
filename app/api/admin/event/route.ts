@@ -134,13 +134,19 @@ export async function PATCH(req: NextRequest) {
       if (!existing) {
         const newEvent = await prisma.event.create({
           data: {
-            ...eventFields,
-            name: eventFields.name ?? '',
-            maxCapacity: eventFields.maxCapacity ?? 30,
+            name:         eventFields.name         ?? '',
+            date:         eventFields.date         ?? '',
+            time:         eventFields.time         ?? '',
+            city:         eventFields.city         ?? '',
+            venue:        eventFields.venue        ?? '',
+            price:        eventFields.price        ?? '',
+            heroImageUrl: eventFields.heroImageUrl ?? '',
+            maxCapacity:  eventFields.maxCapacity  ?? 30,
+            isActive:     eventFields.isActive     ?? false,
             settings: {
               create: {
-                accentColor:  settings?.accentColor  ?? '#F2BA30',
-                allowPlusOne: settings?.allowPlusOne ?? true,
+                accentColor:              settings?.accentColor              ?? '#F2BA30',
+                allowPlusOne:             settings?.allowPlusOne             ?? true,
                 logoUrl:                  settings?.logoUrl,
                 passBackgroundUrl:        settings?.passBackgroundUrl,
                 whatsappTemplateSelected: settings?.whatsappTemplateSelected,
