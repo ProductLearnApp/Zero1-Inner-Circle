@@ -29,24 +29,24 @@ export function DonationSection({ event }: { event: LandingEvent }) {
 
   return (
     <>
-      {/* ── Mobile ── */}
+      {/* ── Mobile (Figma 6126:7893) ── */}
       <div className="w-full md:hidden px-4" style={{ paddingTop: 60 }}>
         <SectionTitle>Donation</SectionTitle>
 
-        {/* Photo collage */}
-        <div className="flex gap-2 w-full" style={{ marginTop: 20, height: 180 }}>
-          <div className="flex-1 overflow-hidden rounded-2xl">
+        {/* Photo collage: left 186×160, right 135×(77+7+75), gap 7px, rounded 9.577px */}
+        <div className="flex" style={{ marginTop: 20, gap: 7, height: 160 }}>
+          <div style={{ width: 186, height: 160, borderRadius: 9.577, overflow: 'hidden', flexShrink: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="" src={img1} className="w-full h-full object-cover" />
+            <img alt="" src={img1} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <div className="flex flex-col gap-2" style={{ width: '38%' }}>
-            <div className="flex-1 overflow-hidden rounded-2xl">
+          <div className="flex flex-col" style={{ width: 135, gap: 7, flexShrink: 0 }}>
+            <div style={{ width: 135, height: 77, borderRadius: 9.577, overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img alt="" src={img2} className="w-full h-full object-cover" />
+              <img alt="" src={img2} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl">
+            <div style={{ width: 135, height: 75, borderRadius: 9.577, overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img alt="" src={img3} className="w-full h-full object-cover" />
+              <img alt="" src={img3} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </div>
@@ -57,15 +57,15 @@ export function DonationSection({ event }: { event: LandingEvent }) {
         </p>
 
         {/* In partnership with */}
-        <div className="flex flex-col items-center" style={{ marginTop: 36, gap: 120 }}>
+        <div className="flex flex-col items-center" style={{ marginTop: 36, gap: 27 }}>
           <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 16, color: '#98969d', letterSpacing: '0.32px', margin: 0 }}>
             In partnership with
           </p>
           {partnerLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img alt="Partner" src={partnerLogo} style={{ width: 210, height: 40, objectFit: 'contain' }} />
+            <img alt="Partner" src={partnerLogo} style={{ maxWidth: 210, height: 40, objectFit: 'contain' }} />
           ) : (
-            <p style={{ fontFamily: '"Inter,sans-serif', fontWeight: 400, fontSize: 22, letterSpacing: '0.15em', color: '#fff', opacity: 0.3, margin: 0, textTransform: 'uppercase', textAlign: 'center' }}>
+            <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 22, letterSpacing: '0.15em', color: '#fff', opacity: 0.3, margin: 0, textTransform: 'uppercase', textAlign: 'center' }}>
               {partnerName}
             </p>
           )}

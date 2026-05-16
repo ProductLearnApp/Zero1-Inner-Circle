@@ -62,26 +62,58 @@ export function HeroSection({ event }: { event: LandingEvent }) {
         <div className="relative flex flex-col items-center w-full px-4" style={{ paddingTop: 136, paddingBottom: 32, gap: 18 }}>
           {/* "Zero1 presents" + wordmark + subtitle */}
           <div className="flex flex-col items-center w-full" style={{ gap: 12 }}>
-            <div className="flex items-center justify-center" style={{ gap: 2 }}>
+            {/*
+              CSS-grid overlay: logo and "presents" share cell (1,1).
+              Logo: 59.9×18.1px, mt:1.51px so its visual top aligns with presents glyph top.
+              Presents: ml:62.15px so it starts right after the logo.
+              Figma node 6120:7463
+            */}
+            <div style={{
+              display: 'inline-grid',
+              gridTemplateColumns: 'max-content',
+              gridTemplateRows: 'max-content',
+              placeItems: 'start',
+              lineHeight: 0,
+            }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36 }} />
-              <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 16, lineHeight: 1 }}>
+              <img
+                alt="Zero1"
+                src={BOLT_MOBILE}
+                style={{ gridColumn: 1, gridRow: 1, width: 59.9, height: 18.1, marginTop: 1.51 }}
+              />
+              <p style={{
+                gridColumn: 1, gridRow: 1,
+                marginLeft: 62.15, marginTop: 0,
+                fontFamily: '"Instrument Serif",serif',
+                fontStyle: 'italic',
+                fontSize: 17.9,
+                lineHeight: 1,
+                color: '#fff',
+                whiteSpace: 'nowrap',
+              }}>
                 presents
               </p>
             </div>
             <div className="flex flex-col items-center w-full" style={{ gap: 8 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img alt="The Inner Circle" src={WORDMARK_MOBILE} style={{ height: 23.98, width: 176.27, display: 'block' }} />
               <p className="text-center w-full" style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontStyle: 'italic', fontSize: 14, lineHeight: '20px', color: '#fff' }}>
                 {subtitle}
               </p>
             </div>
           </div>
-          {/* Bullet list */}
-          <ul className="w-full" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {/* Bullet list — list-disc, 13px, Figma node 6122:7572 */}
+          <ul style={{ listStyleType: 'disc', margin: 0, padding: 0 }}>
             {bullets.map((b, i) => (
-              <li key={i} className="flex items-start" style={{ gap: 8 }}>
-                <span style={{ color: '#f2ba30', fontSize: 10, marginTop: 5, flexShrink: 0 }}>◆</span>
-                <span style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb' }}>{b}</span>
+              <li key={i} style={{
+                marginInlineStart: 19.5,
+                fontFamily: 'Inter,sans-serif',
+                fontWeight: 400,
+                fontSize: 13,
+                lineHeight: '20px',
+                color: '#b7b5bb',
+              }}>
+                {b}
               </li>
             ))}
           </ul>
@@ -114,7 +146,7 @@ export function HeroSection({ event }: { event: LandingEvent }) {
           {/* "Zero1 presents" row — align tops, not centered */}
           <div className="flex items-start justify-center" style={{ gap: 4 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36, marginTop: 3 }} />
+            <img alt="Zero1" src={BOLT_MOBILE} style={{ width: 119, height: 36, marginTop: 5 }} />
             <p className="text-white whitespace-nowrap" style={{ fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 35.5, lineHeight: 1 }}>
               presents
             </p>

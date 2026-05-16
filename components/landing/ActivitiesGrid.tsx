@@ -88,7 +88,7 @@ export function ActivitiesGrid({ event }: { event: LandingEvent }) {
       {/* ── Mobile: vertical list ── */}
       <div className="flex flex-col md:hidden" style={{ gap: 32 }}>
         <SectionTitle>{`Skills you'll learn`}</SectionTitle>
-        <div className="flex flex-col px-4" style={{ gap: 28 }}>
+        <div className="flex flex-col px-4" style={{ gap: 24 }}>
           {activities.map((item, i) => <ActivityCard key={i} item={item} index={i} />)}
         </div>
       </div>

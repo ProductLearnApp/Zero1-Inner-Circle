@@ -44,7 +44,7 @@ export function MissionBar({ event }: { event: LandingEvent }) {
               color: '#000',
             }}
           >
-            Start your mission
+            Start mission
           </span>
         </a>
       </div>

@@ -44,33 +44,28 @@ export function SelectionCriteria({ event }: { event: LandingEvent }) {
 
   return (
     <>
-      {/* ── Mobile ── */}
+      {/* ── Mobile (Figma 6126:7863) ── */}
       <div className="flex flex-col px-4 md:hidden" style={{ gap: 24 }}>
         <SectionTitle>Selection Process</SectionTitle>
-        <div className="flex flex-col" style={{ gap: 0 }}>
+        {/* Steps: icon 24px flush-left, text fills remaining 304px, gap ~20px between steps */}
+        <div className="flex flex-col" style={{ gap: 20 }}>
           {steps.map((step, i) => (
-            <div key={i} className="flex items-start" style={{ gap: 16 }}>
-              {/* Icon + vertical connector */}
-              <div className="shrink-0 flex flex-col items-center" style={{ width: 40 }}>
-                <div className="flex items-center justify-center" style={{ width: 40, height: 40 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={step.icon} style={{ width: (step.iconSize ?? 32) * 0.85, height: (step.iconSize ?? 32) * 0.85 }} />
-                </div>
-                {i < steps.length - 1 && (
-                  <div style={{ width: 1, flex: 1, minHeight: 24, background: 'linear-gradient(to bottom, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%)' }} />
-                )}
+            <div key={i} className="flex items-start justify-between" style={{ width: 328 }}>
+              <div style={{ width: 24, height: 24, flexShrink: 0 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img alt="" src={step.icon} style={{ width: 24, height: 24 }} />
               </div>
-              {/* Text */}
-              <div style={{ flex: 1, paddingBottom: i < steps.length - 1 ? 24 : 0 }}>
-                <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 700, fontSize: 14, lineHeight: '20px', color: '#fff', marginBottom: 4 }}>{step.title}</p>
-                <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#807d85' }}>{renderText(step.body, '#c5c4c8')}</p>
+              <div style={{ width: 304, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 700, fontSize: 14, lineHeight: '20px', color: '#fff', margin: 0 }}>{step.title}</p>
+                <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb', margin: 0 }}>{renderText(step.body, '#c5c4c8')}</p>
               </div>
             </div>
           ))}
         </div>
+        {/* Start mission: 312px wide, 42px tall, centred */}
         <a href={missionUrl} target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-center rounded-lg"
-          style={{ width: '100%', padding: '14px 8px', background: '#f5bd34' }}>
+          style={{ width: 312, height: 42, background: '#f5bd34', margin: '0 auto', marginTop: 12 }}>
           <span style={{ fontFamily: 'Inter,sans-serif', fontWeight: 500, fontSize: 14, color: '#000' }}>Start mission</span>
         </a>
       </div>

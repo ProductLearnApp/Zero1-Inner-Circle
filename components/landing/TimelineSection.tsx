@@ -35,6 +35,25 @@ const H_CONN_R    = 'https://www.figma.com/api/mcp/asset/8d578b4a-7983-48ee-a5a9
 const V_LINE      = 'https://www.figma.com/api/mcp/asset/060b905f-c5cd-49e8-a8ef-c1b833060565'
 
 
+/* ─── Mobile layout constants (Figma 6126:7785 — 328.25px container) ── */
+const M_CARD_W   = 139.25
+const M_CONT_W   = 328
+const M_RIGHT_X  = 189       // left edge of right column
+const M_DOT_X    = 157.75    // left edge of dot (center ≈ 164.75 ≈ M_CONT_W/2)
+const M_DOT_SZ   = 14        // outer dot diameter (mobile dots are 14px)
+const M_BASE_L   = 0         // left col first card top
+const M_BASE_R   = 78        // right col offset below left (Figma: right_y - left_y = 126-48)
+const M_GAP      = 32        // gap between cards in same column
+const M_H_CONN_L = M_DOT_X - M_CARD_W                       // 18.5px
+const M_H_CONN_R = M_RIGHT_X - (M_DOT_X + M_DOT_SZ)        // 17.25px
+
+// Mobile card fixed height: 8(pad) + 116.682(img) + 6(gap) + 16(title) + 8(pad) = 154.682
+// Each description line adds 20px (lineHeight 20px); ~17 chars/line in 123.25px inner width
+function estimateMobileCardHeight(description = '') {
+  const lines = Math.max(1, Math.ceil(description.length / 17))
+  return 154.682 + lines * 20
+}
+
 /* ─── Desktop layout constants (matches Figma 6055:4051) ─────────────── */
 const D_CARD_W   = 290   // card width
 const D_CONT_W   = 760   // total section container width
@@ -53,7 +72,7 @@ function estimateCardHeight(description = '') {
   return 327 + lines * 18
 }
 
-/* ─── Dot component ─────────────────────────────────────────────────── */
+/* ─── Dot components ────────────────────────────────────────────────── */
 function Dot() {
   return (
     <div style={{ position: 'relative', width: D_DOT_SZ, height: D_DOT_SZ, flexShrink: 0 }}>
@@ -61,6 +80,48 @@ function Dot() {
       <img alt="" src={DOT_OUTER} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img alt="" src={DOT_INNER} style={{ position: 'absolute', left: 5.36, top: 5.36, width: 14.29, height: 14.29 }} />
+    </div>
+  )
+}
+
+/* Mobile dot: 14×14 outer, 8×8 inner at offset 3,3 (Figma 6122:7721) */
+function MobileDot() {
+  return (
+    <div style={{ position: 'relative', width: M_DOT_SZ, height: M_DOT_SZ }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src={DOT_OUTER} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src={DOT_INNER} style={{ position: 'absolute', left: 3, top: 3, width: 8, height: 8 }} />
+    </div>
+  )
+}
+
+/* ─── Mobile card (Figma 6124:7737) ─────────────────────────────────── */
+function MobileTimelineCard({ item, defaultBg }: { item: TimelineItem; defaultBg: string }) {
+  const imgSrc = sanitizeUrl(item.imageUrl) || defaultBg
+  return (
+    <div style={{
+      background: '#1c1a1f',
+      borderRadius: 17.286,
+      padding: 8,
+      width: M_CARD_W,
+      flexShrink: 0,
+      boxSizing: 'border-box',
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ height: 116.682, borderRadius: 9.603, overflow: 'hidden', flexShrink: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="" src={imgSrc} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 700, fontSize: 12, lineHeight: '16px', color: '#fff', margin: 0 }}>
+            {item.title}
+          </p>
+          <p style={{ fontFamily: 'Inter,sans-serif', fontWeight: 400, fontSize: 12, lineHeight: '20px', color: '#b7b5bb', margin: 0 }}>
+            {item.description}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
@@ -200,21 +261,110 @@ export function TimelineSection({ event }: { event: LandingEvent }) {
 
   return (
     <>
-      {/* ══════ MOBILE — single column ══════ */}
-      <div className="flex flex-col md:hidden" style={{ paddingTop: 60, gap: 32 }}>
-        <SectionTitle>Flow of the Event</SectionTitle>
-        <div className="flex flex-col px-4" style={{ gap: 16 }}>
-          {items.map((item, i) => (
-            <TimelineCard
-              key={i}
-              item={item}
-              defaultBg={CARD_BG[i] ?? CARD_BG[0]}
-              description={item.description}
-              mobile
-            />
-          ))}
-        </div>
-      </div>
+      {/* ══════ MOBILE — 2-column staggered (Figma 6126:7785) ══════ */}
+      {(() => {
+        /* Same split as desktop */
+        const mLeftItems  = items.filter((_, i) => i % 2 === 0)
+        const mRightItems = items.filter((_, i) => i % 2 === 1)
+
+        const mLeftTops: number[] = mLeftItems.reduce<number[]>((acc, _item, i) => {
+          if (i === 0) return [M_BASE_L]
+          const prev = acc[i - 1]
+          return [...acc, prev + estimateMobileCardHeight(mLeftItems[i - 1].description) + M_GAP]
+        }, [])
+
+        const mRightTops: number[] = mRightItems.reduce<number[]>((acc, _item, i) => {
+          if (i === 0) return [M_BASE_R]
+          const prev = acc[i - 1]
+          return [...acc, prev + estimateMobileCardHeight(mRightItems[i - 1].description) + M_GAP]
+        }, [])
+
+        const mLastL = mLeftTops.length
+          ? mLeftTops[mLeftTops.length - 1] + estimateMobileCardHeight(mLeftItems[mLeftItems.length - 1]?.description)
+          : 0
+        const mLastR = mRightTops.length
+          ? mRightTops[mRightTops.length - 1] + estimateMobileCardHeight(mRightItems[mRightItems.length - 1]?.description)
+          : 0
+        const mBlockH = Math.max(mLastL, mLastR) + 20
+
+        const mFirstDotY = Math.min(mLeftTops[0] ?? 0, mRightTops[0] ?? 0)
+        const mLastDotY  = Math.max(
+          mLeftTops[mLeftTops.length - 1]   ?? 0,
+          mRightTops[mRightTops.length - 1] ?? 0,
+        )
+        const mVLineH = Math.max(mLastDotY - mFirstDotY + M_DOT_SZ, 0)
+
+        return (
+          <div className="flex flex-col md:hidden" style={{ paddingTop: 60, gap: 29 }}>
+            <SectionTitle>Flow of the Event</SectionTitle>
+            <div style={{ position: 'relative', width: M_CONT_W, height: mBlockH, margin: '0 auto' }}>
+
+              {/* Vertical center line */}
+              <div style={{
+                position: 'absolute',
+                left: M_DOT_X + M_DOT_SZ / 2,
+                top: mFirstDotY,
+                width: 1,
+                height: mVLineH,
+              }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img alt="" src={V_LINE} style={{ width: 1, height: '100%', display: 'block' }} />
+              </div>
+
+              {/* Left column cards */}
+              {mLeftItems.map((item, i) => (
+                <div key={i} style={{ position: 'absolute', left: 0, top: mLeftTops[i] }}>
+                  <MobileTimelineCard item={item} defaultBg={CARD_BG[i * 2] ?? CARD_BG[0]} />
+                </div>
+              ))}
+
+              {/* Right column cards */}
+              {mRightItems.map((item, i) => (
+                <div key={i} style={{ position: 'absolute', left: M_RIGHT_X, top: mRightTops[i] }}>
+                  <MobileTimelineCard item={item} defaultBg={CARD_BG[i * 2 + 1] ?? CARD_BG[0]} />
+                </div>
+              ))}
+
+              {/* Left column dots */}
+              {mLeftTops.map((top, i) => mLeftItems[i] && (
+                <div key={i} style={{ position: 'absolute', left: M_DOT_X, top }}>
+                  <MobileDot />
+                </div>
+              ))}
+
+              {/* Right column dots */}
+              {mRightTops.map((top, i) => mRightItems[i] && (
+                <div key={i} style={{ position: 'absolute', left: M_DOT_X, top }}>
+                  <MobileDot />
+                </div>
+              ))}
+
+              {/* Left horizontal connectors: right edge of left card → dot */}
+              {mLeftTops.map((top, i) => mLeftItems[i] && (
+                <div key={i} style={{
+                  position: 'absolute', left: M_CARD_W, top: top + 7,
+                  width: M_H_CONN_L, height: 1, overflow: 'hidden',
+                }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img alt="" src={H_CONN_L} style={{ width: '100%', height: 1, display: 'block' }} />
+                </div>
+              ))}
+
+              {/* Right horizontal connectors: dot right edge → left edge of right card */}
+              {mRightTops.map((top, i) => mRightItems[i] && (
+                <div key={i} style={{
+                  position: 'absolute', left: M_DOT_X + M_DOT_SZ, top: top + 7,
+                  width: M_H_CONN_R, height: 1, overflow: 'hidden',
+                }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img alt="" src={H_CONN_R} style={{ width: '100%', height: 1, display: 'block' }} />
+                </div>
+              ))}
+
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ══════ DESKTOP — 2-column zig-zag ══════ */}
       <div className="hidden md:flex flex-col items-center" style={{ paddingTop: 100, gap: 56 }}>
