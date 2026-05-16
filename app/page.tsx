@@ -13,6 +13,16 @@ async function getEvent(): Promise<LandingEvent | null> {
     })
     if (!event) return null
 
+    // Stale Prisma module workaround: inject selectionProcess via raw SQL
+    if (event.settings) {
+      const raw = await prisma.$queryRaw<Array<{ selectionProcess: unknown }>>`
+        SELECT "selectionProcess" FROM "EventSettings" WHERE "eventId" = ${event.id}
+      `
+      if (raw[0] !== undefined) {
+        ;(event.settings as Record<string, unknown>).selectionProcess = raw[0].selectionProcess
+      }
+    }
+
     const s = event.settings
     return {
       id: event.id,

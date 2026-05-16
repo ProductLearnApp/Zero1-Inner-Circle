@@ -12,6 +12,17 @@ export async function GET(req: NextRequest) {
           include: { settings: true },
         })
 
+    // Stale Prisma module workaround: inject selectionProcess via raw SQL
+    // (the in-memory module pre-dates this field and doesn't SELECT it)
+    if (event?.settings) {
+      const raw = await prisma.$queryRaw<Array<{ selectionProcess: unknown }>>`
+        SELECT "selectionProcess" FROM "EventSettings" WHERE "eventId" = ${event.id}
+      `
+      if (raw[0] !== undefined) {
+        ;(event.settings as Record<string, unknown>).selectionProcess = raw[0].selectionProcess
+      }
+    }
+
     // Return null (not 404) when no event exists — first-run is a normal state
     return Response.json({ event: event ?? null })
   } catch (e) {
@@ -165,16 +176,45 @@ export async function PATCH(req: NextRequest) {
       id = existing.id
     }
 
+    // Strip selectionProcess — the stale in-memory Prisma module (before dev-server restart)
+    // rejects this field in the validator even though it exists in the schema.
+    // It is written separately via $executeRaw which bypasses the JS-level validator.
+    const { selectionProcess, ...settingsForPrisma } = settings ?? {}
+
     const event = await prisma.event.update({
       where: { id },
       data: {
         ...eventFields,
-        ...(settings
+        ...(Object.keys(settingsForPrisma).length > 0 || settings
           ? {
               settings: {
                 upsert: {
-                  create: settings,
-                  update: settings,
+                  create: {
+                    accentColor:  settingsForPrisma.accentColor  ?? '#F2BA30',
+                    allowPlusOne: settingsForPrisma.allowPlusOne ?? true,
+                    logoUrl:                  settingsForPrisma.logoUrl,
+                    passBackgroundUrl:        settingsForPrisma.passBackgroundUrl,
+                    navLogoUrl:               settingsForPrisma.navLogoUrl,
+                    partnerName:              settingsForPrisma.partnerName,
+                    partnerLogoUrl:           settingsForPrisma.partnerLogoUrl,
+                    whatsappTemplateSelected: settingsForPrisma.whatsappTemplateSelected,
+                    whatsappTemplateReminder: settingsForPrisma.whatsappTemplateReminder,
+                    whatsappTemplatePlusOne:  settingsForPrisma.whatsappTemplatePlusOne,
+                    missionFormUrl:           settingsForPrisma.missionFormUrl,
+                    instagramUrl:             settingsForPrisma.instagramUrl,
+                    emailAddress:             settingsForPrisma.emailAddress,
+                    aboutText:                settingsForPrisma.aboutText,
+                    heroSubtitle:             settingsForPrisma.heroSubtitle,
+                    sessionDescription:       settingsForPrisma.sessionDescription,
+                    eventAbout:               settingsForPrisma.eventAbout,
+                    eventCardImageUrl:        settingsForPrisma.eventCardImageUrl,
+                    eventCardSubtitle:        settingsForPrisma.eventCardSubtitle,
+                    donationText:             settingsForPrisma.donationText,
+                    donationImage1Url:        settingsForPrisma.donationImage1Url,
+                    donationImage2Url:        settingsForPrisma.donationImage2Url,
+                    donationImage3Url:        settingsForPrisma.donationImage3Url,
+                  },
+                  update: settingsForPrisma,
                 },
               },
             }
@@ -182,6 +222,15 @@ export async function PATCH(req: NextRequest) {
       },
       include: { settings: true },
     })
+
+    // Write selectionProcess via raw SQL — bypasses the stale Prisma module validator
+    if (selectionProcess !== undefined) {
+      await prisma.$executeRaw`
+        UPDATE "EventSettings"
+        SET "selectionProcess" = ${JSON.stringify(selectionProcess)}::jsonb
+        WHERE "eventId" = ${id}
+      `
+    }
 
     return Response.json({ event })
   } catch (e) {
