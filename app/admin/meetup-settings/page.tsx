@@ -251,7 +251,7 @@ export default function MeetupSettingsPage() {
         heroSubtitle:       form.settings.heroSubtitle       || undefined,
         aboutText:          form.settings.aboutText          || undefined,
         eventCardImageUrl:  form.settings.eventCardImageUrl  || undefined,
-        eventCardSubtitle:  form.settings.eventCardSubtitle  || undefined,
+        eventCardSubtitle:  form.settings.eventCardSubtitle  || null,
         eventAbout:         form.settings.eventAbout         || undefined,
         missionFormUrl:     form.settings.missionFormUrl     || undefined,
         sessionDescription: form.settings.sessionDescription || undefined,

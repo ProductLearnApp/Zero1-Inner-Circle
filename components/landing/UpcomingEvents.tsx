@@ -69,7 +69,7 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
           }} />
 
           {/* Event title overlay — top:21px, centered, 152px wide */}
-          {(event.settings?.eventCardSubtitle) && (
+          {(event.settings?.eventCardSubtitle?.trim()) && (
             <div style={{
               position: 'absolute', top: 21, left: '50%',
               transform: 'translateX(-50%)',
