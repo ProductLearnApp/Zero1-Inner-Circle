@@ -1,7 +1,8 @@
 import type { LandingEvent } from './types'
 import { ASSET_INSTAGRAM, ASSET_EMAIL } from './assets'
+import { BASE_PATH } from '@/lib/basePath'
 
-const ZERO1_LOGO = '/zero1-white-logo.svg'
+const ZERO1_LOGO = BASE_PATH + '/zero1-white-logo.svg'
 
 export function LandingFooter({ event }: { event: LandingEvent }) {
   const instagram = event.settings?.instagramUrl

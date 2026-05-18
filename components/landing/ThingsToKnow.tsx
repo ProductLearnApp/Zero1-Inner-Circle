@@ -2,6 +2,7 @@ import { SectionTitle } from './SectionTitle'
 import type { LandingEvent, ThingsToKnowItem } from './types'
 import { ASSET_PEN_1, ASSET_PEN_2, ASSET_PEN_3, ASSET_PEN_4, ASSET_PEN_5, ASSET_PEN_6, ASSET_PEN_7 } from './assets'
 import { renderText } from './renderText'
+import { resolveMediaUrl } from './sanitizeUrl'
 
 const PENS = [ASSET_PEN_1, ASSET_PEN_2, ASSET_PEN_3, ASSET_PEN_4, ASSET_PEN_5, ASSET_PEN_6, ASSET_PEN_7]
 
@@ -16,7 +17,7 @@ const DEFAULT_ITEMS: ThingsToKnowItem[] = [
 ]
 
 function Item({ item, index, size }: { item: ThingsToKnowItem; index: number; size: 'sm' | 'lg' }) {
-  const iconSrc = item.iconUrl || PENS[index % PENS.length]
+  const iconSrc = resolveMediaUrl(item.iconUrl) || PENS[index % PENS.length]
   const iconSize = size === 'lg' ? 24 : 20
   const fs       = size === 'lg' ? 16 : 14
   const lh       = size === 'lg' ? '22px' : '20px'

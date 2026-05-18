@@ -1,6 +1,8 @@
 import type { LandingEvent } from './types'
+import { resolveMediaUrl } from './sanitizeUrl'
+import { BASE_PATH } from '@/lib/basePath'
 
-const ZERO1_LOGO = '/zero1-white-logo.svg'
+const ZERO1_LOGO = BASE_PATH + '/zero1-white-logo.svg'
 
 /*
  * Desktop sticky nav (Figma 5768:2698):
@@ -25,7 +27,7 @@ export function LandingNav({ event }: { event: LandingEvent }) {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt="Zero1" src={event.settings?.navLogoUrl || ZERO1_LOGO} style={{ width: 119, height: 36 }} />
+      <img alt="Zero1" src={resolveMediaUrl(event.settings?.navLogoUrl) || ZERO1_LOGO} style={{ width: 119, height: 36 }} />
 
       <a
         href={missionUrl}

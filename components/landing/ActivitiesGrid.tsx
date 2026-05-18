@@ -4,7 +4,7 @@ import {
   ASSET_ICON_STACK_ALT, ASSET_ICON_MONEY_ALT, ASSET_ICON_BRAIN,
   ASSET_ICON_DIAGNOSTICS, ASSET_ICON_STRESS,
 } from './assets'
-import { sanitizeUrl } from './sanitizeUrl'
+import { resolveMediaUrl } from './sanitizeUrl'
 import { renderText } from './renderText'
 
 const ICON_FALLBACKS = [ASSET_ICON_STACK_ALT, ASSET_ICON_MONEY_ALT, ASSET_ICON_BRAIN, ASSET_ICON_DIAGNOSTICS, ASSET_ICON_STRESS]
@@ -51,8 +51,7 @@ const DEFAULT_ACTIVITIES: ActivityItem[] = [
 ]
 
 function ActivityCard({ item, index, desktop }: { item: ActivityItem; index: number; desktop?: boolean }) {
-  const isUrl = item.icon?.startsWith('http') || item.icon?.startsWith('/')
-  const iconSrc = isUrl ? (sanitizeUrl(item.icon) ?? ICON_FALLBACKS[index % 5]) : ICON_FALLBACKS[index % 5]
+  const iconSrc = resolveMediaUrl(item.icon) ?? ICON_FALLBACKS[index % 5]
 
   return (
     <div className="flex flex-col items-start" style={{ gap: 18 }}>

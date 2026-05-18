@@ -1,8 +1,9 @@
 import type { LandingEvent } from './types'
 import { ASSET_PARTNER_LOGO } from './assets'
+import { resolveMediaUrl } from './sanitizeUrl'
 
 export function PartnerSection({ event }: { event: LandingEvent }) {
-  const logoUrl = event.settings?.partnerLogoUrl || ASSET_PARTNER_LOGO
+  const logoUrl = resolveMediaUrl(event.settings?.partnerLogoUrl) || ASSET_PARTNER_LOGO
 
   return (
     <>

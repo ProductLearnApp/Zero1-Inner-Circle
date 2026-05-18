@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import type { LandingEvent } from './types'
 import { ASSET_HERO_BG_MAIN } from './assets'
-import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
+import { resolveMediaUrl, isExternalUrl } from './sanitizeUrl'
+import { BASE_PATH } from '@/lib/basePath'
 
 /*
  * Figma node 5797:1357 — hero container: 690px tall
@@ -18,7 +19,7 @@ import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
  *   subtitle at 14px below wordmark (gap 8px)
  */
 
-const BOLT_MOBILE    = '/zero1-white-logo.svg'
+const BOLT_MOBILE    = BASE_PATH + '/zero1-white-logo.svg'
 const WORDMARK_MOBILE  = 'https://www.figma.com/api/mcp/asset/f05b23b1-bd08-488d-97a5-028d17e4f8a0' // Group8
 const WORDMARK_DESKTOP = 'https://www.figma.com/api/mcp/asset/59f6740d-7f96-4a31-bb60-87f92ec2834e'
 
@@ -32,7 +33,7 @@ const DEFAULT_BULLETS = [
 ]
 
 export function HeroSection({ event }: { event: LandingEvent }) {
-  const heroImage = sanitizeUrl(event.heroImageUrl) || ASSET_HERO_BG_MAIN
+  const heroImage = resolveMediaUrl(event.heroImageUrl) || ASSET_HERO_BG_MAIN
   const subtitle = event.settings?.heroSubtitle ?? DEFAULT_SUBTITLE
   const rawText = event.settings?.aboutText
   const bullets = rawText ? rawText.split('\n').filter(Boolean) : DEFAULT_BULLETS

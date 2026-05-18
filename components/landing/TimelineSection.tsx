@@ -1,6 +1,6 @@
 import { SectionTitle } from './SectionTitle'
 import type { TimelineItem, LandingEvent } from './types'
-import { sanitizeUrl } from './sanitizeUrl'
+import { resolveMediaUrl } from './sanitizeUrl'
 
 /*
  * Figma node 6055:4051 — "Flow of the Event" section.
@@ -98,7 +98,7 @@ function MobileDot() {
 
 /* ─── Mobile card (Figma 6124:7737) ─────────────────────────────────── */
 function MobileTimelineCard({ item, defaultBg }: { item: TimelineItem; defaultBg: string }) {
-  const imgSrc = sanitizeUrl(item.imageUrl) || defaultBg
+  const imgSrc = resolveMediaUrl(item.imageUrl) || defaultBg
   return (
     <div style={{
       background: '#1c1a1f',
@@ -138,7 +138,7 @@ function TimelineCard({
   description?: string
   mobile?: boolean
 }) {
-  const imgSrc   = sanitizeUrl(item.imageUrl) || defaultBg
+  const imgSrc   = resolveMediaUrl(item.imageUrl) || defaultBg
   const cardPad  = mobile ? 18 : 24
   const imgH     = mobile ? 160 : 243
   const imgR     = mobile ? 16 : 20

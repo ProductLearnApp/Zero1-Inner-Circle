@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { LandingEvent } from './types'
 import { ASSET_HERO_IMG1 } from './assets'
-import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
+import { sanitizeUrl, isExternalUrl, resolveMediaUrl } from './sanitizeUrl'
 import { SectionTitle } from './SectionTitle'
 
 /*
@@ -26,7 +26,7 @@ export function DonationSection({ event }: { event: LandingEvent }) {
   const img3 = sanitizeUrl(s?.donationImage3Url) || ASSET_HERO_IMG1
   const text = s?.donationText ?? DEFAULT_DONATION_TEXT
   const partnerName = s?.partnerName ?? 'Roastery Coffee'
-  const partnerLogo = sanitizeUrl(s?.partnerLogoUrl) ?? null
+  const partnerLogo = resolveMediaUrl(s?.partnerLogoUrl) ?? null
 
   return (
     <>

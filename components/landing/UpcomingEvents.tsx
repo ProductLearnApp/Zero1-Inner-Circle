@@ -3,7 +3,7 @@ import type { LandingEvent } from './types'
 import {
   ASSET_HERO_IMG2, ASSET_CARD_ICON_DATE, ASSET_CARD_ICON_PASSES, ASSET_INFO_ICON,
 } from './assets'
-import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
+import { resolveMediaUrl, isExternalUrl } from './sanitizeUrl'
 import { SectionTitle } from './SectionTitle'
 
 /*
@@ -37,7 +37,7 @@ function IconBox({ src, size }: { src: string; size: number }) {
 }
 
 export function UpcomingEvents({ event }: { event: LandingEvent }) {
-  const cardImage = sanitizeUrl(event.settings?.eventCardImageUrl) || ASSET_HERO_IMG2
+  const cardImage = resolveMediaUrl(event.settings?.eventCardImageUrl) || ASSET_HERO_IMG2
 
   return (
     <>
