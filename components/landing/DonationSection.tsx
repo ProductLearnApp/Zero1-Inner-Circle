@@ -50,7 +50,7 @@ export function DonationSection({ event }: { event: LandingEvent }) {
         </div>
 
         {/* Text */}
-        <p style={{ marginTop: 18, fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 13, lineHeight: '22px', color: '#b7b5bb', textAlign: 'center' }}>
+        <p style={{ marginTop: 18, fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 16, lineHeight: '24px', color: '#b7b5bb', textAlign: 'center' }}>
           {text}
         </p>
 
@@ -93,7 +93,7 @@ export function DonationSection({ event }: { event: LandingEvent }) {
           </div>
 
           {/* Text below photos — Inter Regular 15px, centred */}
-          <p style={{ marginTop: 18, fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 15, lineHeight: '24px', color: '#b7b5bb', textAlign: 'center' }}>
+          <p style={{ marginTop: 18, fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 16, lineHeight: '24px', color: '#b7b5bb', textAlign: 'center' }}>
             {text}
           </p>
 
