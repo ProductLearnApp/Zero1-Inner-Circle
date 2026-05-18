@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   basePath: '/inner-circle',
+  async redirects() {
+    return [
+      // Redirect bare root → basePath landing page
+      { source: '/', destination: '/inner-circle', permanent: false, basePath: false },
+    ]
+  },
   images: {
     formats: ['image/webp'],
     minimumCacheTTL: 86400,
