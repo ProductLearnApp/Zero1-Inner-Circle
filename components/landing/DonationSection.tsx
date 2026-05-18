@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { LandingEvent } from './types'
 import { ASSET_HERO_IMG1 } from './assets'
-import { sanitizeUrl, isExternalUrl, resolveMediaUrl } from './sanitizeUrl'
+import { isExternalUrl, resolveMediaUrl } from './sanitizeUrl'
 import { SectionTitle } from './SectionTitle'
 
 /*
@@ -21,9 +21,9 @@ const DEFAULT_DONATION_TEXT =
 
 export function DonationSection({ event }: { event: LandingEvent }) {
   const s = event.settings
-  const img1 = sanitizeUrl(s?.donationImage1Url) || ASSET_HERO_IMG1
-  const img2 = sanitizeUrl(s?.donationImage2Url) || ASSET_HERO_IMG1
-  const img3 = sanitizeUrl(s?.donationImage3Url) || ASSET_HERO_IMG1
+  const img1 = resolveMediaUrl(s?.donationImage1Url) || ASSET_HERO_IMG1
+  const img2 = resolveMediaUrl(s?.donationImage2Url) || ASSET_HERO_IMG1
+  const img3 = resolveMediaUrl(s?.donationImage3Url) || ASSET_HERO_IMG1
   const text = s?.donationText ?? DEFAULT_DONATION_TEXT
   const partnerName = s?.partnerName ?? 'Roastery Coffee'
   const partnerLogo = resolveMediaUrl(s?.partnerLogoUrl) ?? null

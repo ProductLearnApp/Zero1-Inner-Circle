@@ -325,7 +325,7 @@ export default function MediaPage() {
                     <div className="relative bg-[#0a0a0f]" style={{ aspectRatio: '1', overflow: 'hidden' }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={file.url}
+                        src={BASE_PATH + file.url}
                         alt={file.name}
                         className="w-full h-full object-cover"
                         loading="lazy"
