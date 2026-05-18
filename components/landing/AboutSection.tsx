@@ -34,7 +34,7 @@ export function AboutSection({ event }: { event: LandingEvent }) {
         <SectionTitle>About the event</SectionTitle>
         <div className="flex flex-col items-center" style={{ gap: 8 }}>
           {paragraphs.map((p, i) => (
-            <p key={i} className="text-center" style={{ fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 13, lineHeight: '22px', color: '#b7b5bb' }}>
+            <p key={i} className="text-center" style={{ fontFamily: '"Inter",sans-serif', fontWeight: 400, fontSize: 16, lineHeight: '24px', color: '#b7b5bb' }}>
               {p}
             </p>
           ))}
