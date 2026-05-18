@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { PASS_ASSETS } from '@/lib/passAssets'
+import { resolveMediaUrl } from '@/lib/basePath'
 import { usePassFlow } from '@/hooks/usePassFlow'
 import { TicketCard } from '@/components/pass/TicketCard/TicketCard'
 import { EventMetaRow } from '@/components/pass/EventMetaRow/EventMetaRow'
@@ -79,7 +80,7 @@ export default function PassClient({ attendee }: { attendee: Attendee }) {
     fgColor: '#000000',
     bgColor: '#ffffff',
     level: 'M',
-    logoUrl: settings?.logoUrl ?? undefined,
+    logoUrl: resolveMediaUrl(settings?.logoUrl) ?? undefined,
   }
 
   const resolvedPlusOnePayload = state === 'confirmed' && plusOneData
@@ -96,14 +97,14 @@ export default function PassClient({ attendee }: { attendee: Attendee }) {
             fgColor: '#000000',
             bgColor: '#ffffff',
             level: 'M',
-            logoUrl: settings?.logoUrl ?? undefined,
+            logoUrl: resolveMediaUrl(settings?.logoUrl) ?? undefined,
           },
           label: `${plusOneData!.plusOneName}'s pass`,
         },
       ]
     : [{ qrConfig: primaryQR, label: 'Your pass' }]
 
-  const heroImageUrl = event.heroImageUrl ?? PASS_ASSETS.heroBg
+  const heroImageUrl = resolveMediaUrl(event.heroImageUrl) ?? PASS_ASSETS.heroBg
   const location = [event.city, event.venue].filter(Boolean).join(', ')
   const showPlusOneFlow = settings?.allowPlusOne && state !== 'confirmed'
   const mapsHref = settings?.mapsUrl
@@ -138,7 +139,7 @@ export default function PassClient({ attendee }: { attendee: Attendee }) {
         <div className={styles.metaSection}>
           <EventMetaRow date={event.date} time={event.time} location={location} />
           <MapsPreview
-            mapImageUrl={settings?.mapImageUrl ?? undefined}
+            mapImageUrl={resolveMediaUrl(settings?.mapImageUrl) ?? undefined}
             href={mapsHref}
           />
         </div>

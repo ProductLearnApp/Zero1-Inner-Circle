@@ -37,7 +37,7 @@ export default function AdminNav() {
       >
         {/* Logo header */}
         <div className="flex items-center px-5 h-16 flex-shrink-0">
-          <img src="/zero1-wordmark.svg" alt="ZERO1" style={{ height: 20, width: 'auto' }} />
+          <img src={BASE_PATH + '/zero1-wordmark.svg'} alt="ZERO1" style={{ height: 20, width: 'auto' }} />
         </div>
 
         {/* Divider */}

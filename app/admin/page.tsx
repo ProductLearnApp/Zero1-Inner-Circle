@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
 
         {/* Bolt + wordmark */}
         <div className="absolute flex flex-col items-center" style={{ left: 155, top: 310 }}>
-          <img src="/zero1-bolt.svg" alt="" style={{ height: 80, width: 'auto' }} />
+          <img src={BASE_PATH + '/zero1-bolt.svg'} alt="" style={{ height: 80, width: 'auto' }} />
           <p className="text-[42px] font-extrabold text-white leading-none mt-1">ZERO1</p>
           <p className="text-base mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>Money Circle</p>
         </div>
@@ -97,8 +97,8 @@ export default function AdminLoginPage() {
 
         {/* Mobile logo (shown only on small screens) */}
         <div className="lg:hidden flex flex-col items-center mb-10">
-          <img src="/zero1-bolt.svg" alt="" style={{ height: 52, width: 'auto' }} />
-          <img src="/zero1-wordmark.svg" alt="ZERO1" className="mt-3" style={{ height: 18, width: 'auto' }} />
+          <img src={BASE_PATH + '/zero1-bolt.svg'} alt="" style={{ height: 52, width: 'auto' }} />
+          <img src={BASE_PATH + '/zero1-wordmark.svg'} alt="ZERO1" className="mt-3" style={{ height: 18, width: 'auto' }} />
         </div>
 
         {/* Card */}
