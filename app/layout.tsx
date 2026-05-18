@@ -2,8 +2,21 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Zero1 Money Circle',
-  description: 'Event management & QR check-in',
+  title: 'Zero1 Inner Circle',
+  description: 'An offline community to solve REAL personal finance problems',
+  openGraph: {
+    title: 'Zero1 Inner Circle',
+    description: 'An offline community to solve REAL personal finance problems',
+    url: 'https://zero1byzerodha.com/innercircle',
+    siteName: 'Zero1 Inner Circle',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Zero1 Inner Circle',
+    description: 'An offline community to solve REAL personal finance problems',
+  },
   robots: {
     index: false,
     follow: false,
