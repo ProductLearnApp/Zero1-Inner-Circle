@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { LandingEvent } from './types'
 import { ASSET_HERO_BG_MAIN } from './assets'
-import { sanitizeUrl } from './sanitizeUrl'
+import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
 
 /*
  * Figma node 5797:1357 — hero container: 690px tall
@@ -48,6 +48,7 @@ export function HeroSection({ event }: { event: LandingEvent }) {
             src={heroImage}
             fill
             priority
+            unoptimized={isExternalUrl(heroImage)}
             sizes="100vw"
             className="pointer-events-none object-cover object-center"
           />
@@ -129,6 +130,7 @@ export function HeroSection({ event }: { event: LandingEvent }) {
             src={heroImage}
             fill
             priority
+            unoptimized={isExternalUrl(heroImage)}
             sizes="100vw"
             className="pointer-events-none object-cover object-center"
           />

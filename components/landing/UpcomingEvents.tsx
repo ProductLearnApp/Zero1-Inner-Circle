@@ -3,7 +3,7 @@ import type { LandingEvent } from './types'
 import {
   ASSET_HERO_IMG2, ASSET_CARD_ICON_DATE, ASSET_CARD_ICON_PASSES, ASSET_INFO_ICON,
 } from './assets'
-import { sanitizeUrl } from './sanitizeUrl'
+import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
 import { SectionTitle } from './SectionTitle'
 
 /*
@@ -60,6 +60,7 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
           <Image
             alt="" src={cardImage}
             fill priority
+            unoptimized={isExternalUrl(cardImage)}
             sizes="(max-width: 768px) 328px, 900px"
             className="object-cover object-bottom"
           />
@@ -181,6 +182,7 @@ export function UpcomingEvents({ event }: { event: LandingEvent }) {
             <Image
               alt="" src={cardImage}
               fill priority
+              unoptimized={isExternalUrl(cardImage)}
               sizes="900px"
               className="object-cover"
             />

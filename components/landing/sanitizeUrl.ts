@@ -12,3 +12,12 @@ export function sanitizeUrl(url: string | null | undefined): string | null {
   if (url.startsWith('http://localhost') || url.startsWith('https://localhost')) return null
   return url
 }
+
+/**
+ * Returns true for absolute http(s) URLs (e.g. Figma CDN, Cloudinary).
+ * Returns false for relative paths like /api/admin/media/... which are
+ * served locally and can benefit from Next.js image optimisation.
+ */
+export function isExternalUrl(url: string): boolean {
+  return url.startsWith('http://') || url.startsWith('https://')
+}

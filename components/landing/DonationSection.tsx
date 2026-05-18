@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { LandingEvent } from './types'
 import { ASSET_HERO_IMG1 } from './assets'
-import { sanitizeUrl } from './sanitizeUrl'
+import { sanitizeUrl, isExternalUrl } from './sanitizeUrl'
 import { SectionTitle } from './SectionTitle'
 
 /*
@@ -37,14 +37,14 @@ export function DonationSection({ event }: { event: LandingEvent }) {
         {/* Photo collage: left 186×160, right 135×(77+7+75), gap 7px, rounded 9.577px */}
         <div className="flex" style={{ marginTop: 20, gap: 7, height: 160 }}>
           <div style={{ position: 'relative', width: 186, height: 160, borderRadius: 9.577, overflow: 'hidden', flexShrink: 0 }}>
-            <Image alt="" src={img1} fill sizes="186px" className="object-cover" />
+            <Image alt="" src={img1} fill unoptimized={isExternalUrl(img1)} sizes="186px" className="object-cover" />
           </div>
           <div className="flex flex-col" style={{ width: 135, gap: 7, flexShrink: 0 }}>
             <div style={{ position: 'relative', width: 135, height: 77, borderRadius: 9.577, overflow: 'hidden' }}>
-              <Image alt="" src={img2} fill sizes="135px" className="object-cover" />
+              <Image alt="" src={img2} fill unoptimized={isExternalUrl(img2)} sizes="135px" className="object-cover" />
             </div>
             <div style={{ position: 'relative', width: 135, height: 75, borderRadius: 9.577, overflow: 'hidden' }}>
-              <Image alt="" src={img3} fill sizes="135px" className="object-cover" />
+              <Image alt="" src={img3} fill unoptimized={isExternalUrl(img3)} sizes="135px" className="object-cover" />
             </div>
           </div>
         </div>
@@ -79,15 +79,15 @@ export function DonationSection({ event }: { event: LandingEvent }) {
           <div className="flex" style={{ marginTop: 32, gap: 18, height: 358 }}>
             {/* Large left — 466px */}
             <div className="overflow-hidden rounded-[24px]" style={{ position: 'relative', width: 466, flexShrink: 0 }}>
-              <Image alt="" src={img1} fill sizes="466px" className="object-cover" />
+              <Image alt="" src={img1} fill unoptimized={isExternalUrl(img1)} sizes="466px" className="object-cover" />
             </div>
             {/* Two stacked right — 338px each */}
             <div className="flex flex-col" style={{ gap: 18, width: 338, flexShrink: 0 }}>
               <div className="overflow-hidden rounded-[24px]" style={{ position: 'relative', height: 169 }}>
-                <Image alt="" src={img2} fill sizes="338px" className="object-cover" />
+                <Image alt="" src={img2} fill unoptimized={isExternalUrl(img2)} sizes="338px" className="object-cover" />
               </div>
               <div className="overflow-hidden rounded-[24px]" style={{ position: 'relative', height: 169 }}>
-                <Image alt="" src={img3} fill sizes="338px" className="object-cover" />
+                <Image alt="" src={img3} fill unoptimized={isExternalUrl(img3)} sizes="338px" className="object-cover" />
               </div>
             </div>
           </div>
