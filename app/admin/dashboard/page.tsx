@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 type Stats = {
   total: number
@@ -77,12 +78,12 @@ export default function DashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const evRes = await fetch('/api/admin/event')
+        const evRes = await fetch(BASE_PATH + '/api/admin/event')
         if (!evRes.ok) { setLoading(false); return }
         const { event } = await evRes.json()
         if (!event) { setLoading(false); return }
         setEvent(event)
-        const stRes = await fetch(`/api/admin/checkin/stats?eventId=${event.id}`)
+        const stRes = await fetch(BASE_PATH + `/api/admin/checkin/stats?eventId=${event.id}`)
         if (stRes.ok) setStats(await stRes.json())
       } finally {
         setLoading(false)
@@ -122,7 +123,7 @@ export default function DashboardPage() {
             <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(102,102,102,0.8)' }}>
               Create your event in Settings to start managing attendees and check-ins.
             </p>
-            <a href="/admin/settings"
+            <a href={BASE_PATH + '/admin/meetup-settings'}
               className="px-6 py-3 rounded-lg text-sm font-semibold text-black"
               style={{ background: 'var(--accent)' }}>
               Create Event →

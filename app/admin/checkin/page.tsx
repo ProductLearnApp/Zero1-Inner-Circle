@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 const QRScanner = dynamic(() => import('@/components/admin/QRScanner'), {
   ssr: false,
@@ -53,7 +54,7 @@ export default function CheckinPage() {
   const [noEvent, setNoEvent] = useState(false)
 
   useEffect(() => {
-    fetch('/api/admin/event').then(r => r.ok ? r.json() : null).then(d => {
+    fetch(BASE_PATH + '/api/admin/event').then(r => r.ok ? r.json() : null).then(d => {
       if (!d?.event) { setNoEvent(true); return }
       setEventId(d.event.id)
       loadStats(d.event.id)
@@ -61,7 +62,7 @@ export default function CheckinPage() {
   }, [])
 
   async function loadStats(id: string) {
-    const res = await fetch(`/api/admin/checkin/stats?eventId=${id}`)
+    const res = await fetch(BASE_PATH + `/api/admin/checkin/stats?eventId=${id}`)
     if (res.ok) {
       const d = await res.json()
       setStats({ checkedIn: d.checkedIn, selected: d.selected })
@@ -94,7 +95,7 @@ export default function CheckinPage() {
         <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(102,102,102,0.8)' }}>
           Create your event in Settings before using the check-in scanner.
         </p>
-        <a href="/admin/settings"
+        <a href={BASE_PATH + '/admin/meetup-settings'}
           className="px-6 py-3 rounded-lg text-sm font-semibold text-black"
           style={{ background: 'var(--accent)' }}>
           Create Event →

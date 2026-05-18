@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 const DEFAULT_POINTS = [
   'Passes for Zero1 Inner Circle are non-transferable. Only the participant and their pre-invited +1 will be allowed into the venue',
@@ -53,7 +54,7 @@ export default function AdminPassPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/admin/event')
+        const res = await fetch(BASE_PATH + '/api/admin/event')
         if (!res.ok) { setLoading(false); return }
         const { event } = await res.json()
         if (event) {
@@ -110,7 +111,7 @@ export default function AdminPassPage() {
         setError('No event found. Create one via the Settings page first.')
         return
       }
-      const res = await fetch('/api/admin/event', {
+      const res = await fetch(BASE_PATH + '/api/admin/event', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

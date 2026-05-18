@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 interface Props {
   attendeeId: string
@@ -20,7 +21,7 @@ export default function PlusOneForm({ attendeeId, accent, onSuccess }: Props) {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('/api/plusone/invite', {
+      const res = await fetch(BASE_PATH + '/api/plusone/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ attendeeId, plusOneName: name, plusOnePhone: phone }),

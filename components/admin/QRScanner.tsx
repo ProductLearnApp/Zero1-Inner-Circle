@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 type ScanResult = {
   status: string
@@ -117,7 +118,7 @@ export default function QRScanner({ onResult }: Props) {
 
     async function handleToken(token: string) {
       try {
-        const res  = await fetch('/api/admin/checkin/verify', {
+        const res  = await fetch(BASE_PATH + '/api/admin/checkin/verify', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ token }),

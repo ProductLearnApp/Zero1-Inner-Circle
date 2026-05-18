@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Papa from 'papaparse'
+import { BASE_PATH } from '@/lib/basePath'
 
 type AttendeeStatus = 'NOT_SELECTED' | 'SELECTED' | 'REJECTED' | 'CHECKED_IN'
 
@@ -70,7 +71,7 @@ export default function AttendeesPage() {
   useEffect(() => { loadEvent() }, [])
 
   async function loadEvent() {
-    const res = await fetch('/api/admin/event')
+    const res = await fetch(BASE_PATH + '/api/admin/event')
     if (!res.ok) {
       setDbError('Could not reach the database. Check that DATABASE_URL is set correctly in your Railway environment variables.')
       setLoading(false)
@@ -92,7 +93,7 @@ export default function AttendeesPage() {
       const params = new URLSearchParams({ eventId })
       if (filter !== 'ALL') params.set('status', filter)
       if (search) params.set('search', search)
-      const res = await fetch(`/api/admin/attendees?${params}`)
+      const res = await fetch(BASE_PATH + `/api/admin/attendees?${params}`)
       if (res.ok) setAttendees((await res.json()).attendees)
     } finally {
       setLoading(false)
@@ -126,7 +127,7 @@ export default function AttendeesPage() {
     if (!event) { setImportError('No event yet. Create one in Settings first.'); return }
     setImporting(true); setImportError(null)
     try {
-      const res = await fetch('/api/admin/attendees/upload', {
+      const res = await fetch(BASE_PATH + '/api/admin/attendees/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rows: preview, eventId: event.id }),
@@ -145,7 +146,7 @@ export default function AttendeesPage() {
 
   async function setStatus(id: string, status: AttendeeStatus) {
     setStatusMenuId(null)
-    await fetch(`/api/admin/attendees/${id}`, {
+    await fetch(BASE_PATH + `/api/admin/attendees/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
@@ -155,14 +156,14 @@ export default function AttendeesPage() {
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this attendee?')) return
-    await fetch(`/api/admin/attendees/${id}`, { method: 'DELETE' })
+    await fetch(BASE_PATH + `/api/admin/attendees/${id}`, { method: 'DELETE' })
     if (event) loadAttendees(event.id)
   }
 
   async function handleManualCheckin(id: string) {
     if (!confirm('Manually mark this attendee as checked in?')) return
     setActionLoading(id + ':checkin')
-    await fetch(`/api/admin/attendees/${id}`, {
+    await fetch(BASE_PATH + `/api/admin/attendees/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ manualCheckin: true }),
@@ -173,7 +174,7 @@ export default function AttendeesPage() {
 
   async function handleRefreshQR(id: string) {
     setActionLoading(id + ':qr')
-    await fetch(`/api/admin/attendees/${id}`, {
+    await fetch(BASE_PATH + `/api/admin/attendees/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ regenerateQR: true }),
@@ -183,7 +184,7 @@ export default function AttendeesPage() {
   }
 
   async function handleNotify(id: string) {
-    const res = await fetch(`/api/admin/attendees/${id}/notify`, {
+    const res = await fetch(BASE_PATH + `/api/admin/attendees/${id}/notify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'selected' }),
@@ -252,7 +253,7 @@ export default function AttendeesPage() {
                 Create your event first before importing attendees.
               </p>
             </div>
-            <a href="/admin/settings"
+            <a href={BASE_PATH + '/admin/meetup-settings'}
               className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-black"
               style={{ background: 'var(--accent)' }}>
               Go to Settings →

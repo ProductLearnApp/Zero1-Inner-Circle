@@ -2,14 +2,15 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://zero1byzerodha.com/inner-circle'),
   title: 'Zero1 Inner Circle',
   description: 'An offline community to solve REAL personal finance problems',
   openGraph: {
     title: 'Zero1 Inner Circle',
     description: 'An offline community to solve REAL personal finance problems',
-    url: 'https://zero1byzerodha.com/innercircle',
+    url: 'https://zero1byzerodha.com/inner-circle',
     siteName: 'Zero1 Inner Circle',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: 'https://zero1byzerodha.com/inner-circle/opengraph-image', width: 1200, height: 630 }],
     type: 'website',
   },
   twitter: {

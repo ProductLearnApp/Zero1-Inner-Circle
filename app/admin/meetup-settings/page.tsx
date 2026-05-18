@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 type ThingsToKnowRow  = { text: string; iconUrl: string }
 type SelectionStepRow = { icon: string; iconSize: string; title: string; body: string }
@@ -116,7 +117,7 @@ export default function MeetupSettingsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/admin/event')
+        const res = await fetch(BASE_PATH + '/api/admin/event')
         if (!res.ok) { setLoadWarn(true); setLoading(false); return }
         const { event } = await res.json()
         if (!event) {
@@ -279,7 +280,7 @@ export default function MeetupSettingsPage() {
     }
 
     try {
-      const res = await fetch('/api/admin/event', {
+      const res = await fetch(BASE_PATH + '/api/admin/event', {
         method:  'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(form.id ? { id: form.id, ...payload } : payload),

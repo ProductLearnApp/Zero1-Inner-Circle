@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { BASE_PATH } from '@/lib/basePath'
 
 type MediaFile = {
   name: string
@@ -42,8 +43,8 @@ export default function MediaPage() {
   const load = useCallback(async () => {
     try {
       const [mediaRes, infoRes] = await Promise.all([
-        fetch('/api/admin/media'),
-        fetch('/api/admin/media/info'),
+        fetch(BASE_PATH + '/api/admin/media'),
+        fetch(BASE_PATH + '/api/admin/media/info'),
       ])
       if (mediaRes.ok) {
         const json = await mediaRes.json() as MediaData
@@ -69,7 +70,7 @@ export default function MediaPage() {
     if (!newFolder.trim()) return
     setCreatingFolder(true)
     try {
-      const res = await fetch('/api/admin/media', {
+      const res = await fetch(BASE_PATH + '/api/admin/media', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ folder: newFolder.trim() }),
@@ -97,7 +98,7 @@ export default function MediaPage() {
         const fd = new FormData()
         fd.append('file', file)
         fd.append('folder', selectedFolder)
-        await fetch('/api/admin/media/upload', { method: 'POST', body: fd })
+        await fetch(BASE_PATH + '/api/admin/media/upload', { method: 'POST', body: fd })
       }
       await load()
     } finally {
@@ -109,7 +110,7 @@ export default function MediaPage() {
     if (!confirm(`Delete "${file.name}"?`)) return
     setDeleting(`${file.folder}/${file.name}`)
     try {
-      await fetch(`/api/admin/media?path=${encodeURIComponent(`${file.folder}/${file.name}`)}`, {
+      await fetch(BASE_PATH + `/api/admin/media?path=${encodeURIComponent(`${file.folder}/${file.name}`)}`, {
         method: 'DELETE',
       })
       await load()

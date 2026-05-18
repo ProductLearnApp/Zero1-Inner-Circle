@@ -99,7 +99,7 @@ export default async function OgImage() {
             }}
           >
             <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.5)' }}>
-              zero1byzerodha.com
+              zero1byzerodha.com/inner-circle
             </span>
           </div>
         </div>

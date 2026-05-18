@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { PassFlowState, PlusOneResult } from '@/types/pass'
+import { BASE_PATH } from '@/lib/basePath'
 
 export function usePassFlow(attendeeId: string, initialPlusOneName?: string | null, initialPlusOneQrPayload?: string | null) {
   const hasExistingPlusOne = !!(initialPlusOneName && initialPlusOneQrPayload)
@@ -25,7 +26,7 @@ export function usePassFlow(attendeeId: string, initialPlusOneName?: string | nu
     setIsSubmitting(true)
     setSubmitError(null)
     try {
-      const res = await fetch('/api/plusone/invite', {
+      const res = await fetch(BASE_PATH + '/api/plusone/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ attendeeId, plusOneName: name, plusOnePhone: mobile }),

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { BASE_PATH } from '@/lib/basePath'
 
 const links = [
   { href: '/admin/dashboard', label: 'Dashboard' },
@@ -20,7 +21,7 @@ export default function AdminNav() {
   if (pathname === '/admin') return null
 
   async function handleLogout() {
-    await fetch('/api/admin/login', { method: 'DELETE' })
+    await fetch(BASE_PATH + '/api/admin/login', { method: 'DELETE' })
     router.push('/admin')
   }
 
@@ -73,7 +74,7 @@ export default function AdminNav() {
         {/* View landing page */}
         <div className="px-[11px] pb-3">
           <a
-            href="/"
+            href={BASE_PATH + '/'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center h-10 px-4 rounded-lg text-sm transition-colors"

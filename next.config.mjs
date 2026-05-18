@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/inner-circle',
   images: {
     formats: ['image/webp'],
     minimumCacheTTL: 86400,
