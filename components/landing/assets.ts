@@ -23,16 +23,16 @@ export const ASSET_DIAMOND_MASK     = '' // pending — provide SVG
 export const ASSET_DIAMOND_FILL     = '' // pending — provide SVG
 
 // ─── Event card info icons ─────────────────────────────────────────────────────
-export const ASSET_CARD_ICON_DATE   = '' // pending — provide SVG
+export const ASSET_CARD_ICON_DATE   = `${LA}/card-icon-date.svg`
 export const ASSET_CARD_ICON_PASSES = '' // pending — provide SVG
-export const ASSET_INFO_ICON        = '' // pending — provide SVG
+export const ASSET_INFO_ICON        = `${LA}/info-icon.svg`
 
 // ─── Skills / activity icons (one per default activity) ──────────────────────
-export const ASSET_ICON_STACK_ALT   = '' // pending — provide SVG
-export const ASSET_ICON_MONEY_ALT   = '' // pending — provide SVG
-export const ASSET_ICON_BRAIN       = '' // pending — provide SVG
-export const ASSET_ICON_DIAGNOSTICS = '' // pending — provide SVG
-export const ASSET_ICON_STRESS      = '' // pending — provide SVG
+export const ASSET_ICON_STACK_ALT   = `${LA}/icon-mission.svg`
+export const ASSET_ICON_MONEY_ALT   = `${LA}/icon-payment.svg`
+export const ASSET_ICON_BRAIN       = `${LA}/icon-rsvp.svg`
+export const ASSET_ICON_DIAGNOSTICS = `${LA}/icon-review.svg`
+export const ASSET_ICON_STRESS      = `${LA}/icon-stress.svg`
 
 // ─── Timeline card backgrounds ────────────────────────────────────────────────
 export const ASSET_CARD_BG          = '' // pending — provide image
@@ -66,26 +66,26 @@ export const ASSET_V_CONNECTOR_132  = `${LA}/connector-v.svg`
 export const ASSET_V_CONNECTOR_133  = `${LA}/connector-v.svg`
 
 // ─── Selection Process step icons ─────────────────────────────────────────────
-export const ASSET_STEP_MISSION     = '' // pending — provide SVG
-export const ASSET_STEP_REVIEW      = '' // pending — provide SVG
-export const ASSET_STEP_PAYMENT     = '' // pending — provide SVG
-export const ASSET_STEP_RSVP        = '' // pending — provide SVG
+export const ASSET_STEP_MISSION     = `${LA}/icon-mission.svg`
+export const ASSET_STEP_REVIEW      = `${LA}/icon-review.svg`
+export const ASSET_STEP_PAYMENT     = `${LA}/icon-payment.svg`
+export const ASSET_STEP_RSVP        = `${LA}/icon-rsvp.svg`
 
 // ─── Things to know pen icons ─────────────────────────────────────────────────
-export const ASSET_PEN_1            = '' // pending — provide SVG
-export const ASSET_PEN_2            = '' // pending — provide SVG
-export const ASSET_PEN_3            = '' // pending — provide SVG
-export const ASSET_PEN_4            = '' // pending — provide SVG
-export const ASSET_PEN_5            = '' // pending — provide SVG
-export const ASSET_PEN_6            = '' // pending — provide SVG
-export const ASSET_PEN_7            = '' // pending — provide SVG
+export const ASSET_PEN_1            = `${LA}/pen-1.svg`
+export const ASSET_PEN_2            = `${LA}/pen-2.svg`
+export const ASSET_PEN_3            = `${LA}/pen-3.svg`
+export const ASSET_PEN_4            = `${LA}/pen-4.svg`
+export const ASSET_PEN_5            = `${LA}/pen-5.svg`
+export const ASSET_PEN_6            = `${LA}/pen-6.svg`
+export const ASSET_PEN_7            = `${LA}/pen-7.svg`
 
 // ─── Footer / social icons ────────────────────────────────────────────────────
 export const ASSET_INSTAGRAM        = '' // pending — provide SVG
 export const ASSET_EMAIL            = '' // pending — provide SVG
 
 // ─── Partner logo ─────────────────────────────────────────────────────────────
-export const ASSET_PARTNER_LOGO     = '' // pending — provide image
+export const ASSET_PARTNER_LOGO     = `${LA}/partner-logo.svg`
 
 // ─── Aliases kept for backward compatibility ──────────────────────────────────
 export const ASSET_LINE_LONG        = ASSET_LINE

@@ -33,7 +33,6 @@ const DOT_OUTER   = BASE_PATH + '/landing-assets/dot-combined.svg'
 const DOT_INNER   = BASE_PATH + '/landing-assets/dot-inner.svg'
 const H_CONN_L    = BASE_PATH + '/landing-assets/connector-h.svg'
 const H_CONN_R    = BASE_PATH + '/landing-assets/connector-h.svg'
-const V_LINE      = BASE_PATH + '/landing-assets/connector-v.svg'
 
 
 /* ─── Mobile layout constants (Figma 6126:7785 — 328.25px container) ── */
@@ -308,10 +307,8 @@ export function TimelineSection({ event }: { event: LandingEvent }) {
                 top: mFirstDotY,
                 width: 1,
                 height: mVLineH,
-              }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img alt="" src={V_LINE} loading="lazy" style={{ width: 1, height: '100%', display: 'block' }} />
-              </div>
+                background: '#535157',
+              }} />
 
               {/* Left column cards */}
               {mLeftItems.map((item, i) => (
@@ -373,17 +370,15 @@ export function TimelineSection({ event }: { event: LandingEvent }) {
         <SectionTitle>Flow of the Event</SectionTitle>
         <div style={{ position: 'relative', width: D_CONT_W, height: D_BLOCK_H }}>
 
-          {/* Vertical dashed center line */}
+          {/* Vertical center line */}
           <div style={{
             position: 'absolute',
             left: D_DOT_X + D_DOT_SZ / 2,
             top: firstDotY,
             width: 1,
             height: V_LINE_H,
-          }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="" src={V_LINE} loading="lazy" style={{ width: 1, height: '100%', display: 'block' }} />
-          </div>
+            background: '#535157',
+          }} />
 
           {/* Left column cards */}
           {leftItems.map((item, i) => (
