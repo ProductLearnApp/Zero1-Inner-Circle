@@ -35,8 +35,16 @@ export async function POST(req: NextRequest) {
     const event = await prisma.event.findUnique({ where: { id: eventId } })
     if (!event) return Response.json({ error: 'Event not found' }, { status: 404 })
 
-    let added = 0
-    let updated = 0
+    // Pre-validate rows before opening the transaction so we skip known-bad
+    // entries without consuming transaction time.
+    type ValidRow = {
+      name: string
+      phone: string
+      status: AttendeeStatus
+      seatLabel: string | undefined
+    }
+
+    const validRows: ValidRow[] = []
     const errors: string[] = []
 
     for (const row of rows) {
@@ -56,58 +64,66 @@ export async function POST(req: NextRequest) {
         continue
       }
 
-      const status = parseStatus(rawStatus)
+      validRows.push({ name, phone, status: parseStatus(rawStatus), seatLabel })
+    }
 
-      try {
-        const existing = await prisma.attendee.findUnique({
-          where: { eventId_phone: { eventId, phone } },
-        })
+    let added = 0
+    let updated = 0
 
-        if (existing) {
-          const needsQR = status === AttendeeStatus.SELECTED && !existing.qrPayload
-          const qrPayload = needsQR
-            ? generateQRPayload({
-                attendeeId: existing.id,
+    // Run all DB writes atomically — either all succeed or none do.
+    // Timeout raised to 30 s to handle large CSVs.
+    await prisma.$transaction(
+      async (tx) => {
+        for (const { name, phone, status, seatLabel } of validRows) {
+          const existing = await tx.attendee.findUnique({
+            where: { eventId_phone: { eventId, phone } },
+          })
+
+          if (existing) {
+            const needsQR = status === AttendeeStatus.SELECTED && !existing.qrPayload
+            const qrPayload = needsQR
+              ? generateQRPayload({
+                  attendeeId: existing.id,
+                  eventId,
+                  passType: 'primary',
+                  name,
+                  seatLabel: seatLabel ?? existing.seatLabel ?? '',
+                })
+              : existing.qrPayload
+
+            await tx.attendee.update({
+              where: { id: existing.id },
+              data: {
+                name,
+                status,
+                ...(seatLabel ? { seatLabel } : {}),
+                ...(needsQR ? { qrPayload, passUrl: `/pass/${existing.id}` } : {}),
+              },
+            })
+            updated++
+          } else {
+            const created = await tx.attendee.create({
+              data: { eventId, name, phone, status, seatLabel },
+            })
+            if (status === AttendeeStatus.SELECTED) {
+              const qrPayload = generateQRPayload({
+                attendeeId: created.id,
                 eventId,
                 passType: 'primary',
                 name,
-                seatLabel: seatLabel ?? existing.seatLabel ?? '',
+                seatLabel: seatLabel ?? '',
               })
-            : existing.qrPayload
-
-          await prisma.attendee.update({
-            where: { id: existing.id },
-            data: {
-              name,
-              status,
-              ...(seatLabel ? { seatLabel } : {}),
-              ...(needsQR ? { qrPayload, passUrl: `/pass/${existing.id}` } : {}),
-            },
-          })
-          updated++
-        } else {
-          const created = await prisma.attendee.create({
-            data: { eventId, name, phone, status, seatLabel },
-          })
-          if (status === AttendeeStatus.SELECTED) {
-            const qrPayload = generateQRPayload({
-              attendeeId: created.id,
-              eventId,
-              passType: 'primary',
-              name,
-              seatLabel: seatLabel ?? '',
-            })
-            await prisma.attendee.update({
-              where: { id: created.id },
-              data: { qrPayload, passUrl: `/pass/${created.id}` },
-            })
+              await tx.attendee.update({
+                where: { id: created.id },
+                data: { qrPayload, passUrl: `/pass/${created.id}` },
+              })
+            }
+            added++
           }
-          added++
         }
-      } catch (rowErr) {
-        errors.push(`DB error for ${name}: ${String(rowErr)}`)
-      }
-    }
+      },
+      { timeout: 30_000 },
+    )
 
     return Response.json({ added, updated, errors })
   } catch (e) {

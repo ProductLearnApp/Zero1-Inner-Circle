@@ -18,6 +18,8 @@ type Attendee = {
   notifiedAt: string | null
   plusOneName: string | null
   plusOnePhone: string | null
+  plusOneCheckedIn: boolean
+  plusOneCheckedInAt: string | null
 }
 
 type Event = { id: string; name: string }
@@ -66,6 +68,13 @@ export default function AttendeesPage() {
 
   const [statusMenuId, setStatusMenuId] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null) // attendee id
+  const [showAllErrors, setShowAllErrors] = useState(false)
+
+  // Manual add modal
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addForm, setAddForm] = useState({ name: '', phone: '', status: 'NOT_SELECTED', seatLabel: '' })
+  const [addLoading, setAddLoading] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadEvent() }, [])
@@ -125,7 +134,7 @@ export default function AttendeesPage() {
   async function handleImport() {
     if (!preview) return
     if (!event) { setImportError('No event yet. Create one in Settings first.'); return }
-    setImporting(true); setImportError(null)
+    setImporting(true); setImportError(null); setShowAllErrors(false)
     try {
       const res = await fetch(BASE_PATH + '/api/admin/attendees/upload', {
         method: 'POST',
@@ -183,6 +192,27 @@ export default function AttendeesPage() {
     if (event) loadAttendees(event.id)
   }
 
+  async function handleAddAttendee() {
+    if (!event) return
+    setAddLoading(true); setAddError(null)
+    try {
+      const res = await fetch(BASE_PATH + '/api/admin/attendees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...addForm, eventId: event.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setAddError(data.error ?? `Error ${res.status}`); return }
+      setShowAddModal(false)
+      setAddForm({ name: '', phone: '', status: 'NOT_SELECTED', seatLabel: '' })
+      await loadAttendees(event.id)
+    } catch (e) {
+      setAddError(String(e))
+    } finally {
+      setAddLoading(false)
+    }
+  }
+
   async function handleNotify(id: string) {
     const res = await fetch(BASE_PATH + `/api/admin/attendees/${id}/notify`, {
       method: 'POST',
@@ -223,6 +253,13 @@ export default function AttendeesPage() {
             style={{ background: '#161616', border: '1px solid #252525', color: 'rgba(255,255,255,0.85)' }}
           >
             ↓&nbsp;&nbsp;Sample CSV
+          </button>
+          <button
+            onClick={() => { setShowAddModal(true); setAddError(null) }}
+            className="flex items-center gap-1.5 h-10 px-4 rounded-lg text-[13px] font-medium transition hover:bg-white/5"
+            style={{ background: '#161616', border: '1px solid #252525', color: 'rgba(255,255,255,0.85)' }}
+          >
+            +&nbsp;&nbsp;Add Attendee
           </button>
           <button
             onClick={() => fileRef.current?.click()}
@@ -269,13 +306,27 @@ export default function AttendeesPage() {
           <div className="mb-4 rounded-xl p-4 text-sm" style={{ background: '#0f2a10', border: '1px solid #2a5a20' }}>
             <p className="text-green-400 font-medium">
               Import complete — {importResult.added} added, {importResult.updated} updated
+              {importResult.errors.length > 0 && (
+                <span className="ml-2 text-red-400">· {importResult.errors.length} skipped</span>
+              )}
             </p>
             {importResult.errors.length > 0 && (
-              <ul className="mt-2 space-y-0.5">
-                {importResult.errors.map((e, i) => (
-                  <li key={i} className="text-red-400 text-xs">{e}</li>
-                ))}
-              </ul>
+              <div className="mt-2">
+                <ul className="space-y-0.5">
+                  {(showAllErrors ? importResult.errors : importResult.errors.slice(0, 5)).map((e, i) => (
+                    <li key={i} className="text-red-400 text-xs">{e}</li>
+                  ))}
+                </ul>
+                {importResult.errors.length > 5 && (
+                  <button
+                    onClick={() => setShowAllErrors(v => !v)}
+                    className="mt-1 text-xs underline"
+                    style={{ color: 'rgba(239,68,68,0.7)' }}
+                  >
+                    {showAllErrors ? 'Show less' : `Show ${importResult.errors.length - 5} more…`}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -414,8 +465,17 @@ export default function AttendeesPage() {
                     <div className="flex flex-col min-w-0 pr-4">
                       <span className="text-sm font-semibold text-white truncate">{a.name}</span>
                       {a.plusOneName && (
-                        <span className="text-[11px] truncate mt-0.5" style={{ color: 'rgba(180,160,80,0.8)' }}>
-                          {a.plusOneName}&rsquo;s +1
+                        <span className="text-[11px] truncate mt-0.5 flex items-center gap-1" style={{ color: 'rgba(180,160,80,0.8)' }}>
+                          <span
+                            className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            style={{ background: a.plusOneCheckedIn ? '#30b0cf' : 'rgba(180,160,80,0.6)' }}
+                          />
+                          {a.plusOneName} +1
+                          {a.plusOneCheckedIn && a.plusOneCheckedInAt && (
+                            <span style={{ color: '#30b0cf' }}>
+                              · {new Date(a.plusOneCheckedInAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          )}
                         </span>
                       )}
                     </div>
@@ -554,6 +614,94 @@ export default function AttendeesPage() {
           )}
         </div>
       </div>
+      {/* Add Attendee Modal */}
+      {showAddModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.7)' }}
+          onClick={() => setShowAddModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-6"
+            style={{ background: '#161616', border: '1px solid #2a2a2a' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold text-white mb-5">Add Attendee</h2>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium mb-1" style={{ color: 'rgba(102,102,102,0.9)' }}>Name *</label>
+                <input
+                  value={addForm.name}
+                  onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="Full name"
+                  className="w-full h-10 rounded-lg px-3 text-sm text-white outline-none"
+                  style={{ background: '#0f0f13', border: '1px solid #252525' }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium mb-1" style={{ color: 'rgba(102,102,102,0.9)' }}>Phone *</label>
+                <input
+                  value={addForm.phone}
+                  onChange={e => setAddForm(f => ({ ...f, phone: e.target.value }))}
+                  placeholder="+91XXXXXXXXXX or 10-digit"
+                  className="w-full h-10 rounded-lg px-3 text-sm text-white outline-none font-mono"
+                  style={{ background: '#0f0f13', border: '1px solid #252525' }}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className="block text-xs font-medium mb-1" style={{ color: 'rgba(102,102,102,0.9)' }}>Status</label>
+                  <select
+                    value={addForm.status}
+                    onChange={e => setAddForm(f => ({ ...f, status: e.target.value }))}
+                    className="w-full h-10 rounded-lg px-3 text-sm text-white outline-none"
+                    style={{ background: '#0f0f13', border: '1px solid #252525' }}
+                  >
+                    <option value="NOT_SELECTED">Waitlisted</option>
+                    <option value="SELECTED">Selected</option>
+                    <option value="REJECTED">Pending</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-medium mb-1" style={{ color: 'rgba(102,102,102,0.9)' }}>Seat Label</label>
+                  <input
+                    value={addForm.seatLabel}
+                    onChange={e => setAddForm(f => ({ ...f, seatLabel: e.target.value }))}
+                    placeholder="A-01 (optional)"
+                    className="w-full h-10 rounded-lg px-3 text-sm text-white outline-none"
+                    style={{ background: '#0f0f13', border: '1px solid #252525' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {addError && (
+              <p className="mt-3 text-xs text-red-400">{addError}</p>
+            )}
+
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="flex-1 h-10 rounded-lg text-sm font-medium"
+                style={{ background: '#252525', color: 'rgba(255,255,255,0.6)' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddAttendee}
+                disabled={addLoading || !addForm.name.trim() || !addForm.phone.trim()}
+                className="flex-1 h-10 rounded-lg text-sm font-semibold text-[#0a0a0f] disabled:opacity-50"
+                style={{ background: '#f2ba30' }}
+              >
+                {addLoading ? 'Adding…' : 'Add Attendee'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

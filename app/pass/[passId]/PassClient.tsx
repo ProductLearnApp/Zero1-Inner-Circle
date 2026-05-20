@@ -75,8 +75,25 @@ export default function PassClient({ attendee }: { attendee: Attendee }) {
     )
   }
 
+  // qrPayload should always be set for SELECTED/CHECKED_IN attendees, but
+  // guard the rare case where generation failed — show an error instead of
+  // encoding the attendee.id (a ~25-char cuid the scanner silently ignores).
+  if (!attendee.qrPayload) {
+    return (
+      <main className={styles.page} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+        <div style={{ maxWidth: 320, textAlign: 'center', padding: 32, borderRadius: 16, background: 'var(--color-surface)' }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'white', marginBottom: 8 }}>Pass not ready</h1>
+          <p style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>
+            Your QR code is still being generated. Please try refreshing in a moment, or contact the organiser.
+          </p>
+        </div>
+      </main>
+    )
+  }
+
   const primaryQR: QRConfig = {
-    value: attendee.qrPayload ?? attendee.id,
+    value: attendee.qrPayload,
     fgColor: '#000000',
     bgColor: '#ffffff',
     level: 'M',

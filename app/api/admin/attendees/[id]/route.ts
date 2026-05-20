@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generateQRPayload } from '@/lib/qr'
 import { notifySelected } from '@/lib/whatsapp'
+import { BASE_PATH } from '@/lib/basePath'
 import { AttendeeStatus } from '@prisma/client'
 
 type Params = { params: { id: string } }
@@ -87,7 +88,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         // Auto-send WhatsApp if template is configured
         const templateId = attendee.event.settings?.whatsappTemplateSelected
         if (templateId) {
-          const passUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/pass/${attendee.id}`
+          const passUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${BASE_PATH}/pass/${attendee.id}`
           try {
             await notifySelected(attendee.phone, attendee.name, passUrl, templateId)
             updateData.notifiedAt = new Date()

@@ -45,7 +45,7 @@ function getResultCfg(status: string) {
 export default function CheckinPage() {
   const [result, setResult]           = useState<ScanResult | null>(null)
   const [recent, setRecent]           = useState<RecentScan[]>([])
-  const [stats, setStats]             = useState<{ checkedIn: number; selected: number } | null>(null)
+  const [stats, setStats]             = useState<{ checkedIn: number; selected: number; totalPresent: number } | null>(null)
   const [eventId, setEventId]         = useState<string | null>(null)
   const [scannerKey, setScannerKey]   = useState(0)
   const [isLive, setIsLive]           = useState(true)
@@ -65,7 +65,7 @@ export default function CheckinPage() {
     const res = await fetch(BASE_PATH + `/api/admin/checkin/stats?eventId=${id}`)
     if (res.ok) {
       const d = await res.json()
-      setStats({ checkedIn: d.checkedIn, selected: d.selected })
+      setStats({ checkedIn: d.checkedIn, selected: d.selected, totalPresent: d.totalPresent ?? d.checkedIn })
     }
   }
 
@@ -124,8 +124,8 @@ export default function CheckinPage() {
         {stats && (
           <div className="flex items-center gap-8">
             <div className="text-right">
-              <p className="text-lg font-extrabold leading-none" style={{ color: '#f2ba30' }}>{stats.checkedIn}</p>
-              <p className="text-[11px] mt-0.5" style={{ color: 'rgba(102,102,102,0.7)' }}>Today</p>
+              <p className="text-lg font-extrabold leading-none" style={{ color: '#f2ba30' }}>{stats.totalPresent}</p>
+              <p className="text-[11px] mt-0.5" style={{ color: 'rgba(102,102,102,0.7)' }}>Present</p>
             </div>
             <div className="text-right">
               <p className="text-lg font-extrabold leading-none" style={{ color: '#f2ba30' }}>{stats.selected}</p>

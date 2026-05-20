@@ -12,5 +12,8 @@ export function normalizePhone(raw: string): string | null {
   // 91 prefix without +
   if (/^91\d{10}$/.test(stripped)) return `+${stripped}`
 
+  // 0-prefixed 11-digit Indian number (e.g. 09876543210 → +919876543210)
+  if (/^0\d{10}$/.test(stripped)) return `+91${stripped.slice(1)}`
+
   return null
 }

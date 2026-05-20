@@ -36,5 +36,5 @@ export async function generateQRCodeImage(payload: string): Promise<string> {
 export function verifyQRPayload(token: string): QRPayload {
   const secret = process.env.QR_SECRET
   if (!secret) throw new Error('QR_SECRET not configured')
-  return jwt.verify(token, secret) as QRPayload
+  return jwt.verify(token, secret, { algorithms: ['HS256'] }) as QRPayload
 }

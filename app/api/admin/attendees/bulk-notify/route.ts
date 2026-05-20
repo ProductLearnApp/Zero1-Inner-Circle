@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { notifySelected, notifyReminder } from '@/lib/whatsapp'
+import { BASE_PATH } from '@/lib/basePath'
 import { AttendeeStatus } from '@prisma/client'
 
 export async function POST(req: NextRequest) {
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
           const templateId = settings?.whatsappTemplateSelected
           if (!templateId) throw new Error('Selected template not configured')
           if (!a.passUrl) throw new Error('No pass URL')
-          await notifySelected(a.phone, a.name, `${baseUrl}${a.passUrl}`, templateId)
+          await notifySelected(a.phone, a.name, `${baseUrl}${BASE_PATH}/pass/${a.id}`, templateId)
         }
         await prisma.attendee.update({ where: { id: a.id }, data: { notifiedAt: new Date() } })
         results.sent++

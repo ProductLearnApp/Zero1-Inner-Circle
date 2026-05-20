@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { generateQRPayload } from '@/lib/qr'
 import { normalizePhone } from '@/lib/phone'
 import { notifyPlusOne } from '@/lib/whatsapp'
+import { BASE_PATH } from '@/lib/basePath'
 import { AttendeeStatus } from '@prisma/client'
 
 export async function POST(req: NextRequest) {
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
     // Send WhatsApp to the +1 if template is configured
     const templateId = updated.event.settings?.whatsappTemplatePlusOne
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? ''
-    const passUrl = `${baseUrl}/pass/${attendeeId}`
+    const passUrl = `${baseUrl}${BASE_PATH}/pass/${attendeeId}`
 
     if (templateId) {
       try {
