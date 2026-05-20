@@ -20,8 +20,8 @@ import { BASE_PATH } from '@/lib/basePath'
  */
 
 const BOLT_MOBILE    = BASE_PATH + '/zero1-white-logo.svg'
-const WORDMARK_MOBILE  = 'https://www.figma.com/api/mcp/asset/f05b23b1-bd08-488d-97a5-028d17e4f8a0' // Group8
-const WORDMARK_DESKTOP = 'https://www.figma.com/api/mcp/asset/59f6740d-7f96-4a31-bb60-87f92ec2834e'
+const WORDMARK_MOBILE  = BASE_PATH + '/landing-assets/wordmark-white.svg'
+const WORDMARK_DESKTOP = BASE_PATH + '/landing-assets/wordmark-white.svg'
 
 const DEFAULT_SUBTITLE = 'An offline community to solve REAL personal finance problems'
 

@@ -1,6 +1,7 @@
 import { SectionTitle } from './SectionTitle'
 import type { TimelineItem, LandingEvent } from './types'
 import { resolveMediaUrl } from './sanitizeUrl'
+import { BASE_PATH } from '@/lib/basePath'
 
 /*
  * Figma node 6055:4051 — "Flow of the Event" section.
@@ -28,11 +29,11 @@ const CARD_BG: string[] = [
 ]
 
 /* ─── Connector + dot assets ─────────────────────────────────────────── */
-const DOT_OUTER   = 'https://www.figma.com/api/mcp/asset/9aa14555-8d5b-4a5f-a925-caaac847ebbf'
-const DOT_INNER   = 'https://www.figma.com/api/mcp/asset/51cbc578-8520-4e2f-8049-53f625caca74'
-const H_CONN_L    = 'https://www.figma.com/api/mcp/asset/4590f8db-dcf8-4a90-805d-d05df41447ac'
-const H_CONN_R    = 'https://www.figma.com/api/mcp/asset/8d578b4a-7983-48ee-a5a9-afb8192562a4'
-const V_LINE      = 'https://www.figma.com/api/mcp/asset/060b905f-c5cd-49e8-a8ef-c1b833060565'
+const DOT_OUTER   = BASE_PATH + '/landing-assets/dot-combined.svg'
+const DOT_INNER   = BASE_PATH + '/landing-assets/dot-inner.svg'
+const H_CONN_L    = BASE_PATH + '/landing-assets/connector-h.svg'
+const H_CONN_R    = BASE_PATH + '/landing-assets/connector-h.svg'
+const V_LINE      = BASE_PATH + '/landing-assets/connector-v.svg'
 
 
 /* ─── Mobile layout constants (Figma 6126:7785 — 328.25px container) ── */
