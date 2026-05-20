@@ -612,12 +612,12 @@ export default function AttendeesPage() {
                     }}
                   >
                     {/* Name with +1 tag */}
-                    <div className="flex flex-col min-w-0 pr-4 pl-4">
+                    <div className="flex flex-col min-w-0 pr-4">
                       <span className="text-sm truncate flex items-center gap-2" style={{ color: 'rgba(242,186,48,0.9)' }}>
+                        <span className="font-medium text-white">{a.plusOneName}</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(242,186,48,0.15)', border: '0.5px solid rgba(242,186,48,0.3)' }}>
                           {a.name}&rsquo;s +1
                         </span>
-                        <span className="font-medium">{a.plusOneName}</span>
                       </span>
                     </div>
 
