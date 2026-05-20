@@ -75,6 +75,10 @@ export function TicketCard({ passes, showPager = false, confirmed = false }: Pro
                   level={pass.qrConfig.level}
                   logoUrl={pass.qrConfig.logoUrl}
                 />
+                <button className={styles.downloadBtn} aria-label="Download pass" type="button">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={PASS_ASSETS.downloadIcon} alt="" className={styles.downloadIcon} />
+                </button>
               </div>
             ))}
           </div>
@@ -90,6 +94,10 @@ export function TicketCard({ passes, showPager = false, confirmed = false }: Pro
                 logoUrl={passes[0].qrConfig.logoUrl}
               />
             </div>
+            <button className={styles.downloadBtn} aria-label="Download pass" type="button">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={PASS_ASSETS.downloadIcon} alt="" className={styles.downloadIcon} />
+            </button>
           </div>
         )}
 
